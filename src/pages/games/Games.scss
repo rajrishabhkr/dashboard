@@ -1,32 +1,5 @@
-// Shared Mixins
-@mixin button-styles($bg-color) {
-  background-color: $bg-color !important;
-  color: $light !important;
-  font-weight: 600 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 1px;
-  transition: all 0.3s ease !important;
-  border: none !important;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) !important;
-
-  &:hover {
-    background-color: darken($bg-color, 10%) !important;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
-}
-
-@mixin panel-styles {
-  background-color: $panel-bg;
-  border: 4px solid $danger;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  padding: 2rem;
-}
+//  src/styles/Games.scss
+@use 'sass:color';
 
 // Cube3D Component Styles
 .cube3d-container {
@@ -170,7 +143,7 @@
     justify-content: center;
 
     &:hover:not(.disabled) {
-      background-color: lighten($element-bg, 5%);
+      background-color: color.adjust($element-bg, $lightness: 5%);
       transform: scale(1.02);
     }
 

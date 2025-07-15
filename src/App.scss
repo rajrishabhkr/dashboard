@@ -1,7 +1,8 @@
 // src/App.scss
-@use '@/styles/variables' as *;
-@use '@/styles/mixins' as *;
+@use './styles/variables' as *;
+@use './styles/mixins' as *;
 @use 'sass:map';
+@use 'sass:color';
 
 // Main app container
 .app {

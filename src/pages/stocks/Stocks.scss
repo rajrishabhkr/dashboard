@@ -1,17 +1,13 @@
 // Shared variables
-$primary-color: #4a148c;
-$secondary-color: #7b1fa2;
-$text-color: #ffffff;
-$light-gray: #252525;
-$border-color: #ddd;
-$shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+// src/styles/SchoolInfo.scss
+@use 'sass:color';
 
 // Common styles
 .stock-container, .stock-detail-container {
   max-width: 1200px;
   margin: 20px auto;
   padding: 20px;
-  background: $light-gray;
+  background: $element-bg;
   border-radius: 8px;
   box-shadow: $shadow;
 }
@@ -46,12 +42,12 @@ $shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
 
   th {
-    background-color: $light-gray;
+    background-color: $element-bg;
     font-weight: 600;
   }
 
   .stock-table-row:hover {
-    background-color: lighten($secondary, 2%);
+    background-color: color.adjust($secondary, $lightness: 2%);
   }
 }
 
@@ -59,7 +55,7 @@ $shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
   gap: 10px;
-  color: $text-color;
+  color: $light;
   text-decoration: none;
 
   &:hover {
@@ -143,7 +139,7 @@ $shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 
 .stock-detail-item {
   padding: 10px;
-  background-color: $light-gray;
+  background-color: $element-bg;
   border-radius: 5px;
 }
 
@@ -171,7 +167,7 @@ $shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: darken($primary-color, 10%);
+    background-color: color.adjust($primary-color, $lightness: -10%);
   }
 }
 
