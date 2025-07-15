@@ -3,6 +3,7 @@ import { IconButton, Tooltip } from "@mui/material";
 import { Facebook, X, LinkedIn, GitHub, Instagram, Menu } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import "./Components.scss";
+import dashboardLogo from '../../public/images/logo/wolf.png';
 
 interface HeaderProps {
   sidebarOpen: boolean;
@@ -33,7 +34,7 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, setSidebarOpen }) => {
 
         <Link to="/" className="logo-title">
           <img 
-            src="/images/logo/wolf.png" 
+            src={dashboardLogo}
             alt="Dashboard Logo" 
             className="logo-img"
           />

@@ -1,6 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './Stocks.scss';
+import goairLogo from '../../../public/images/logo/goair.png';
+import oyoLogo from '../../../public/images/logo/oyo.png';
+import zomatoLogo from '../../../public/images/logo/zomato.png';
+import bajajLogo from '../../../public/images/logo/bajaj.png';
+import swiggyLogo from '../../../public/images/logo/swiggy.png';
+import tataLogo from '../../../public/images/logo/tata.png';
+import mahindraLogo from '../../../public/images/logo/mahindra.png';
 
 const ipoList = [
   {
@@ -9,7 +16,7 @@ const ipoList = [
     issueSize: '₹3600 Crores',
     priceRange: '₹50-60',
     minInvestment: '₹50,000',
-    logo: '/images/logo/goair.png',
+    logo: goairLogo,
   },
   {
     id: 2,
@@ -17,7 +24,7 @@ const ipoList = [
     issueSize: '₹3600 Crores',
     priceRange: '₹50-60',
     minInvestment: '₹50,000',
-    logo: '/images/logo/oyo.png',
+    logo: oyoLogo,
   },
   {
     id: 3,
@@ -25,7 +32,7 @@ const ipoList = [
     issueSize: '₹3600 Crores',
     priceRange: '₹50-60',
     minInvestment: '₹50,000',
-    logo: '/images/logo/zomato.png',
+    logo: zomatoLogo,
   },
   {
     id: 4,
@@ -33,7 +40,7 @@ const ipoList = [
     issueSize: '₹3600 Crores',
     priceRange: '₹50-60',
     minInvestment: '₹50,000',
-    logo: '/images/logo/bajaj.png',
+    logo: bajajLogo,
   },
   {
     id: 5,
@@ -41,7 +48,7 @@ const ipoList = [
     issueSize: '₹3600 Crores',
     priceRange: '₹50-60',
     minInvestment: '₹50,000',
-    logo: '/images/logo/swiggy.png',
+    logo: swiggyLogo,
   },
   {
     id: 6,
@@ -49,7 +56,7 @@ const ipoList = [
     issueSize: '₹3600 Crores',
     priceRange: '₹50-60',
     minInvestment: '₹50,000',
-    logo: '/images/logo/tata.png',
+    logo: tataLogo,
   },
   {
     id: 7,
@@ -57,7 +64,7 @@ const ipoList = [
     issueSize: '₹3600 Crores',
     priceRange: '₹50-60',
     minInvestment: '₹50,000',
-    logo: '/images/logo/mahindra.png',
+    logo: mahindraLogo,
   },
 ];
 

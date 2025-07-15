@@ -1,6 +1,13 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import './Stocks.scss';
+import goairLogo from '../../../public/images/logo/goair.png';
+import oyoLogo from '../../../public/images/logo/oyo.png';
+import zomatoLogo from '../../../public/images/logo/zomato.png';
+import bajajLogo from '../../../public/images/logo/bajaj.png';
+import swiggyLogo from '../../../public/images/logo/swiggy.png';
+import tataLogo from '../../../public/images/logo/tata.png';
+import mahindraLogo from '../../../public/images/logo/mahindra.png';
 
 const ipoDetails: Record<number, any> = {
   1: {
@@ -12,7 +19,7 @@ const ipoDetails: Record<number, any> = {
     issueDates: '12 Dec - 15 Dec 22',
     listedPrice: '₹150',
     listingGain: '₹10 (10.0%)',
-    logo: '/images/logo/goair.png',
+    logo: goairLogo,
     about: 'GoAir is a leading low-cost airline in India, offering affordable and reliable air travel services.',
     keyHighlights: [
       'Strong market presence in the aviation industry.',
@@ -29,7 +36,7 @@ const ipoDetails: Record<number, any> = {
     issueDates: '12 Dec - 15 Dec 22',
     listedPrice: '₹150',
     listingGain: '₹10 (10.0%)',
-    logo: '/images/logo/oyo.png',
+    logo: oyoLogo,
     about: 'OYO is a global hospitality chain offering affordable and standardized accommodations.',
     keyHighlights: [
       'Rapid expansion across multiple countries.',
@@ -46,7 +53,7 @@ const ipoDetails: Record<number, any> = {
     issueDates: '12 Dec - 15 Dec 22',
     listedPrice: '₹150',
     listingGain: '₹10 (10.0%)',
-    logo: '/images/logo/zomato.png',
+    logo: zomatoLogo,
     about: 'Zomato is a leading food delivery and restaurant discovery platform in India and globally.',
     keyHighlights: [
       'Dominant market share in the food delivery industry.',
@@ -63,7 +70,7 @@ const ipoDetails: Record<number, any> = {
     issueDates: '12 Dec - 15 Dec 22',
     listedPrice: '₹150',
     listingGain: '₹10 (10.0%)',
-    logo: '/images/logo/bajaj.png',
+    logo: bajajLogo,
     about: 'Bajaj Energy is a leading power generation company in India, focusing on sustainable energy solutions.',
     keyHighlights: [
       'Diversified portfolio of thermal and renewable energy projects.',
@@ -80,7 +87,7 @@ const ipoDetails: Record<number, any> = {
     issueDates: '12 Dec - 15 Dec 22',
     listedPrice: '₹150',
     listingGain: '₹10 (10.0%)',
-    logo: '/images/logo/swiggy.png',
+    logo: swiggyLogo,
     about: 'Swiggy is a leading online food delivery platform in India, known for its fast and reliable service.',
     keyHighlights: [
       'Extensive network of restaurants and delivery partners.',
@@ -97,7 +104,7 @@ const ipoDetails: Record<number, any> = {
     issueDates: '12 Dec - 15 Dec 22',
     listedPrice: '₹150',
     listingGain: '₹10 (10.0%)',
-    logo: '/images/logo/tata.png',
+    logo: tataLogo,
     about: 'Tata is a diversified conglomerate with businesses in sectors like steel, automobiles, IT, and more.',
     keyHighlights: [
       'One of the largest and most trusted brands in India.',
@@ -114,7 +121,7 @@ const ipoDetails: Record<number, any> = {
     issueDates: '12 Dec - 15 Dec 22',
     listedPrice: '₹150',
     listingGain: '₹10 (10.0%)',
-    logo: '/images/logo/mahindra.png',
+    logo: mahindraLogo,
     about: 'Mahindra is a leading Indian multinational conglomerate with interests in automobiles, agriculture, and IT.',
     keyHighlights: [
       'Strong presence in the automotive and farm equipment sectors.',

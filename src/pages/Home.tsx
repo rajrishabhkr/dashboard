@@ -4,8 +4,19 @@ import viteLogo from '/vite.svg';
 import { Link } from 'react-router-dom';
 import './Home.scss';
 import profileImage from '../../public/images/profile_pic.jpg';
+import gif1 from '../../public/images/gif/chicken.gif';
+import gif2 from '../../public/images/gif/panda.gif';
+import gif3 from '../../public/images/gif/poo.gif';
+import gif4 from '../../public/images/gif/unicorn.gif';
 
 const Home: React.FC = () => {
+  const gifs = [
+    { id: 1, src: gif1, title: 'Chicken' },
+    { id: 2, src: gif2, title: 'panda' },
+    { id: 3, src: gif3, title: 'poo' },
+    { id: 4, src: gif4, title: 'unicorn' },
+  ];
+
   return (
     <div className="home-container">
       {/* Welcome Section */}
@@ -15,12 +26,29 @@ const Home: React.FC = () => {
         <h1>Welcome to Rishabh Dashboard</h1>
         <p>Manage your website efficiently with React + Vite tools.</p>
         
+        {/* GIF Gallery Section */}
+        <div className="gif-gallery-section">
+          <div className="gif-grid">
+            {gifs.map((gif) => (
+              <div key={gif.id} className="gif-card">
+                <div className="gif-container">
+                  <img 
+                    src={gif.src} 
+                    alt={gif.title} 
+                    className="gif-item"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      
         <div className="action-buttons">
           <Link to="/info" className="info-page-button">
             <i className="fas fa-chart-line"></i> Checkout Info to know more
           </Link>
           <Link to="/" className="profile-page-button">
-            <i className="fas fa-user"></i> View Full Profile
+            <i className="fas fa-user"></i> View My Profile below
           </Link>
         </div>
       </div>
@@ -66,7 +94,7 @@ const Home: React.FC = () => {
             </div>
             <div className="detail-item">
               <span className="label">Skills:</span>
-              <span className="value">React, Vue, JavaScript, TypeScript, SCSS, Node.js</span>
+              <span className="value">React, Vue, JavaScript, TypeScript, Java, Node.js</span>
             </div>
             <div className="detail-item">
               <span className="label">Experience:</span>
