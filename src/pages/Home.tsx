@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import reactLogo from '../assets/react.svg';
 import viteLogo from '/vite.svg';
 import { Link } from 'react-router-dom';
@@ -12,10 +12,41 @@ import gif4 from '../../public/images/gif/unicorn.gif';
 const Home: React.FC = () => {
   const gifs = [
     { id: 1, src: gif1, title: 'Chicken' },
-    { id: 2, src: gif2, title: 'panda' },
-    { id: 3, src: gif3, title: 'poo' },
-    { id: 4, src: gif4, title: 'unicorn' },
+    { id: 2, src: gif2, title: 'Panda' },
+    { id: 3, src: gif3, title: 'Poo' },
+    { id: 4, src: gif4, title: 'Unicorn' },
   ];
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+
+  // Auto-advance carousel
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+    
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % gifs.length);
+    }, 2000); // Change GIF every 2 seconds
+
+    return () => clearInterval(interval);
+  }, [gifs.length, isAutoPlaying]);
+
+  const goToPrevious = () => {
+    setIsAutoPlaying(false);
+    setCurrentIndex((prevIndex) => 
+      prevIndex === 0 ? gifs.length - 1 : prevIndex - 1
+    );
+  };
+
+  const goToNext = () => {
+    setIsAutoPlaying(false);
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % gifs.length);
+  };
+
+  const goToGif = (index: number) => {
+    setIsAutoPlaying(false);
+    setCurrentIndex(index);
+  };
 
   return (
     <div className="home-container">
@@ -26,19 +57,34 @@ const Home: React.FC = () => {
         <h1>Welcome to Rishabh Dashboard</h1>
         <p>Manage your website efficiently with React + Vite tools.</p>
         
-        {/* GIF Gallery Section */}
-        <div className="gif-gallery-section">
-          <div className="gif-grid">
-            {gifs.map((gif) => (
-              <div key={gif.id} className="gif-card">
-                <div className="gif-container">
-                  <img 
-                    src={gif.src} 
-                    alt={gif.title} 
-                    className="gif-item"
-                  />
-                </div>
-              </div>
+        {/* GIF Carousel Section */}
+        <div className="gif-carousel-section">
+          <div className="gif-carousel">
+            <button className="carousel-button prev" onClick={goToPrevious}>
+              &lt;
+            </button>
+            
+            <div className="carousel-slide">
+              <img 
+                src={gifs[currentIndex].src} 
+                alt={gifs[currentIndex].title} 
+                className="gif-item"
+              />
+              <div className="carousel-caption">{gifs[currentIndex].title}</div>
+            </div>
+            
+            <button className="carousel-button next" onClick={goToNext}>
+              &gt;
+            </button>
+          </div>
+          
+          <div className="carousel-indicators">
+            {gifs.map((gif, index) => (
+              <button
+                key={gif.id}
+                className={`indicator ${index === currentIndex ? 'active' : ''}`}
+                onClick={() => goToGif(index)}
+              />
             ))}
           </div>
         </div>

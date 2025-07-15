@@ -1,8 +1,8 @@
 // src/styles/index.scss
 
-// Import variables and mixins first
-@import 'variables';
-@import 'mixins';
+// Use variables and mixins with namespace (or wildcard)
+@use 'variables' as *;
+@use 'mixins' as *;
 
 // Base reset
 *,

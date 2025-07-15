@@ -1,4 +1,7 @@
 // src/App.scss
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+@use 'sass:map';
 
 // Main app container
 .app {
@@ -9,6 +12,6 @@
   // Route content area
   &__content {
     flex: 1;
-    padding: map-get($spacers, 4);
+    padding: map.get($spacers, 4);  // Changed map-get to map.get
   }
 }
