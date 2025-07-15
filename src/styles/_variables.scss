@@ -1,0 +1,35 @@
+// src/styles/_variables.scss
+
+// Color system
+$primary: #3742fa;
+$secondary: #6c5ce7;
+$success: #2ed573;
+$danger: #ff4757;
+$warning: #e84393;
+$light: #ffffff;
+$dark: #121212;
+$sky: #00cec9;
+$panel-bg: #1e1e1e;
+$element-bg: #252525;
+$text-muted: rgba(255, 255, 255, 0.7);
+
+// Spacing system
+$spacer: 1rem;
+$spacers: (
+  0: 0,
+  1: $spacer * 0.25,
+  2: $spacer * 0.5,
+  3: $spacer,
+  4: $spacer * 1.5,
+  5: $spacer * 3,
+);
+
+// Typography
+$font-family-sans-serif: 'Inter', system-ui, -apple-system, sans-serif;
+$font-size-base: 1rem;
+$line-height-base: 1.5;
+
+// Breakpoints
+$breakpoint-mobile: 480px;
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1024px;

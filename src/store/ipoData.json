@@ -1,0 +1,31 @@
+{   "ipoList" : [
+   {
+      "id":1,
+      "company":"GO AIR"
+   },
+   {
+      "id":2,
+      "company":"OYO"
+   },
+   {
+      "id":3,
+      "company":"ZOMATO"
+   },
+   {
+      "id":4,
+      "company":"BAJAJ ENERGY"
+   },
+   {
+      "id":5,
+      "company":"SWIGGY"
+   },
+   {
+      "id":6,
+      "company":"TATA"
+   },
+   {
+      "id":7,
+      "company":"MAHINDRA"
+   }
+]
+}

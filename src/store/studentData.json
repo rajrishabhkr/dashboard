@@ -1,0 +1,203 @@
+{ "initialStudents" : [
+   {
+      "id":1,
+      "name":"Rahul Sharma",
+      "age":20,
+      "grade":"A",
+      "gender":"Male",
+      "email":"rahul@abc.com"
+   },
+   {
+      "id":2,
+      "name":"Priya Verma",
+      "age":21,
+      "grade":"B",
+      "gender":"Female",
+      "email":"priya@abc.com"
+   },
+   {
+      "id":3,
+      "name":"Ankit Singh",
+      "age":22,
+      "grade":"C",
+      "gender":"Male",
+      "email":"ankit@abc.com"
+   },
+   {
+      "id":4,
+      "name":"Sonam Gupta",
+      "age":19,
+      "grade":"A",
+      "gender":"Female",
+      "email":"sonam@abc.com"
+   },
+   {
+      "id":5,
+      "name":"Rajesh Yadav",
+      "age":20,
+      "grade":"B",
+      "gender":"Male",
+      "email":"rajesh@abc.com"
+   },
+   {
+      "id":6,
+      "name":"Neetu Kumari",
+      "age":21,
+      "grade":"A",
+      "gender":"Female",
+      "email":"neetu@abc.com"
+   },
+   {
+      "id":7,
+      "name":"Vikas Mishra",
+      "age":22,
+      "grade":"C",
+      "gender":"Male",
+      "email":"vikas@abc.com"
+   },
+   {
+      "id":8,
+      "name":"Pooja Singh",
+      "age":19,
+      "grade":"B",
+      "gender":"Female",
+      "email":"pooja@abc.com"
+   },
+   {
+      "id":9,
+      "name":"Mohan Patel",
+      "age":20,
+      "grade":"A",
+      "gender":"Male",
+      "email":"mohan@abc.com"
+   },
+   {
+      "id":10,
+      "name":"Seema Devi",
+      "age":21,
+      "grade":"C",
+      "gender":"Female",
+      "email":"seema@abc.com"
+   },
+   {
+      "id":11,
+      "name":"Amit Kumar",
+      "age":22,
+      "grade":"A",
+      "gender":"Male",
+      "email":"amit@abc.com"
+   },
+   {
+      "id":12,
+      "name":"Rani Yadav",
+      "age":19,
+      "grade":"B",
+      "gender":"Female",
+      "email":"rani@abc.com"
+   },
+   {
+      "id":13,
+      "name":"Sanjay Gupta",
+      "age":20,
+      "grade":"C",
+      "gender":"Male",
+      "email":"sanjay@abc.com"
+   },
+   {
+      "id":14,
+      "name":"Kavita Singh",
+      "age":21,
+      "grade":"A",
+      "gender":"Female",
+      "email":"kavita@abc.com"
+   },
+   {
+      "id":15,
+      "name":"Ravi Kumar",
+      "age":22,
+      "grade":"B",
+      "gender":"Male",
+      "email":"ravi@abc.com"
+   },
+   {
+      "id":16,
+      "name":"Anita Sharma",
+      "age":19,
+      "grade":"C",
+      "gender":"Female",
+      "email":"anita@abc.com"
+   },
+   {
+      "id":17,
+      "name":"Rohit Yadav",
+      "age":20,
+      "grade":"A",
+      "gender":"Male",
+      "email":"rohit@abc.com"
+   },
+   {
+      "id":18,
+      "name":"Meera Devi",
+      "age":21,
+      "grade":"B",
+      "gender":"Female",
+      "email":"meera@abc.com"
+   },
+   {
+      "id":19,
+      "name":"Suresh Patel",
+      "age":22,
+      "grade":"C",
+      "gender":"Male",
+      "email":"suresh@abc.com"
+   },
+   {
+      "id":20,
+      "name":"Radha Singh",
+      "age":19,
+      "grade":"A",
+      "gender":"Female",
+      "email":"radha@abc.com"
+   },
+   {
+      "id":21,
+      "name":"Arjun Mehta",
+      "age":20,
+      "grade":"B",
+      "gender":"Male",
+      "email":"arjun@abc.com"
+   },
+   {
+      "id":22,
+      "name":"Neha Chauhan",
+      "age":21,
+      "grade":"A",
+      "gender":"Female",
+      "email":"neha@abc.com"
+   },
+   {
+      "id":23,
+      "name":"Deepak Sharma",
+      "age":22,
+      "grade":"C",
+      "gender":"Male",
+      "email":"deepak@abc.com"
+   },
+   {
+      "id":24,
+      "name":"Simran Kaur",
+      "age":19,
+      "grade":"B",
+      "gender":"Female",
+      "email":"simran@abc.com"
+   },
+   {
+      "id":25,
+      "name":"Harsh Tiwari",
+      "age":20,
+      "grade":"A",
+      "gender":"Male",
+      "email":"harsh@abc.com"
+   }
+]
+}

@@ -1,0 +1,14 @@
+// src/App.scss
+
+// Main app container
+.app {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  // Route content area
+  &__content {
+    flex: 1;
+    padding: map-get($spacers, 4);
+  }
+}
