@@ -16,7 +16,7 @@ const Footer: React.FC = () => {
     <footer className="footer">
       <div className="footer-content">
         <div className="copyright">
-          © {new Date().getFullYear()} Rishabh Dashboard. All rights reserved.
+          © {new Date().getFullYear()} Rishabh Tech. All rights reserved.
         </div>
         
         <div className="footer-social-icons">

@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import './Info.scss';
+import React, { useState } from 'react';
+import './Home.scss';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { Link } from 'react-router-dom';
 
 const Info: React.FC = () => {
-  const [count, setCount] = useState(0);
   const [activeTab, setActiveTab] = useState('daily');
 
   // Task data
@@ -33,49 +32,6 @@ const Info: React.FC = () => {
   ];
 
   const COLORS = ['#2ed573', '#ff4757'];
-
-  // Stopwatch Logic
-  const [time, setTime] = useState(0);
-  const [isRunning, setIsRunning] = useState(false);
-
-  useEffect(() => {
-    let interval: number | null = null;
-
-    if (isRunning) {
-      interval = window.setInterval(() => {
-        setTime((prevTime) => prevTime + 10);
-      }, 10);
-    } else if (interval !== null) {
-      window.clearInterval(interval);
-    }
-
-    return () => {
-      if (interval !== null) window.clearInterval(interval);
-    };
-  }, [isRunning]);
-
-  const startStopwatch = () => {
-    setIsRunning(true);
-  };
-
-  const stopStopwatch = () => {
-    setIsRunning(false);
-  };
-
-  const resetStopwatch = () => {
-    setTime(0);
-    setIsRunning(false);
-  };
-
-  const formatTime = (time: number) => {
-    const minutes = Math.floor(time / 60000);
-    const seconds = Math.floor((time % 60000) / 1000);
-    const milliseconds = Math.floor((time % 1000) / 10);
-
-    return `${minutes.toString().padStart(2, '0')}:${seconds
-      .toString()
-      .padStart(2, '0')}.${milliseconds.toString().padStart(2, '0')}`;
-  };
 
   const toggleTask = (id: number) => {
     setTasks(tasks.map(task => 
@@ -152,7 +108,7 @@ const Info: React.FC = () => {
                       outerRadius={80}
                       fill="#8884d8"
                       dataKey="value"
-                      label={({ name }) => `${name}: ${(100).toFixed(0)}%`}
+                      label={({ name, percent }: { name?: string; percent?: number }) => `${name || ''}: ${((percent || 0) * 100).toFixed(0)}%`}
                     >
                       {pieData.map((_, index) => (
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -164,42 +120,6 @@ const Info: React.FC = () => {
               )}
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Counter Section */}
-      <div className="counter-section">
-        <h2>Counter</h2>
-        <div className="counter-controls">
-          <button
-            className="counter-button"
-            onClick={() => setCount((prev) => prev + 1)}
-            aria-label="Increase counter"
-          >
-            Count is {count}
-          </button>
-          <button
-            className="reset-button"
-            onClick={() => setCount(0)}
-            aria-label="Reset counter"
-          >
-            Reset
-          </button>
-        </div>
-      </div>
-
-      {/* Stopwatch Section */}
-      <div className="stopwatch-section">
-        <h2>Stopwatch</h2>
-        <div className="stopwatch-display">{formatTime(time)}</div>
-        <div className="stopwatch-controls">
-          <button onClick={startStopwatch} disabled={isRunning}>
-            Start
-          </button>
-          <button onClick={stopStopwatch} disabled={!isRunning}>
-            Stop
-          </button>
-          <button onClick={resetStopwatch}>Reset</button>
         </div>
       </div>
     </div>

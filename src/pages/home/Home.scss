@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .home-container {
   padding: 2rem;
   max-width: 1200px;
@@ -9,18 +11,103 @@
   padding: 2rem 0;
   margin-bottom: 2rem;
 
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-    transition: filter 300ms;
+  .logos-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+  }
 
-    &:hover {
+  .logo {
+    height: 5.5em;
+    padding: 0.8em;
+    will-change: filter, transform;
+    transition: all 300ms ease;
+
+    &.clickable-logo {
+      cursor: pointer;
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+
+    &.centerpiece-logo {
+      height: 7.5em;
+      &.rishabh-brand-logo,
+      &.wolf-brand-logo {
+        width: 7.5em;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+      border: 2px solid $primary-color;
+      box-shadow: 0 0 15px rgba(30, 144, 255, 0.4);
+
+      &:hover {
+        filter: drop-shadow(0 0 2em rgba(30, 144, 255, 0.9));
+        box-shadow: 0 0 25px rgba(30, 144, 255, 0.8);
+      }
+    }
+
+    &.vite-logo:hover {
       filter: drop-shadow(0 0 2em #646cffaa);
     }
 
     &.react:hover {
       filter: drop-shadow(0 0 2em #61dafbaa);
+    }
+  }
+
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+
+    .modal-content {
+      background: $element-bg;
+      border: 1px solid $border-color;
+      border-radius: 16px;
+      padding: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2rem;
+      max-width: 90vw;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+
+      img {
+        max-width: 280px;
+        max-height: 280px;
+        object-fit: contain;
+        filter: drop-shadow(0 0 20px $primary-color);
+      }
+
+      h3 {
+        color: $light;
+        margin: 0;
+        font-size: 1.4rem;
+      }
+
+      button {
+        padding: 8px 24px;
+        background: $primary-color;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+
+        &:hover {
+          background: color.adjust($primary-color, $lightness: -10%);
+        }
+      }
     }
   }
 

@@ -1,31 +1,58 @@
-{   "ipoList" : [
-   {
-      "id":1,
-      "company":"GO AIR"
-   },
-   {
-      "id":2,
-      "company":"OYO"
-   },
-   {
-      "id":3,
-      "company":"ZOMATO"
-   },
-   {
-      "id":4,
-      "company":"BAJAJ ENERGY"
-   },
-   {
-      "id":5,
-      "company":"SWIGGY"
-   },
-   {
-      "id":6,
-      "company":"TATA"
-   },
-   {
-      "id":7,
-      "company":"MAHINDRA"
-   }
+[
+  {
+    "id": 1,
+    "company": "GO AIR",
+    "issueSize": "₹3600 Crores",
+    "priceRange": "₹50-60",
+    "minInvestment": "₹50,000",
+    "logoName": "goair.png"
+  },
+  {
+    "id": 2,
+    "company": "OYO",
+    "issueSize": "₹3600 Crores",
+    "priceRange": "₹50-60",
+    "minInvestment": "₹50,000",
+    "logoName": "oyo.png"
+  },
+  {
+    "id": 3,
+    "company": "ZOMATO",
+    "issueSize": "₹3600 Crores",
+    "priceRange": "₹50-60",
+    "minInvestment": "₹50,000",
+    "logoName": "zomato.png"
+  },
+  {
+    "id": 4,
+    "company": "BAJAJ ENERGY",
+    "issueSize": "₹3600 Crores",
+    "priceRange": "₹50-60",
+    "minInvestment": "₹50,000",
+    "logoName": "bajaj.png"
+  },
+  {
+    "id": 5,
+    "company": "SWIGGY",
+    "issueSize": "₹3600 Crores",
+    "priceRange": "₹50-60",
+    "minInvestment": "₹50,000",
+    "logoName": "swiggy.png"
+  },
+  {
+    "id": 6,
+    "company": "TATA",
+    "issueSize": "₹3600 Crores",
+    "priceRange": "₹50-60",
+    "minInvestment": "₹50,000",
+    "logoName": "tata.png"
+  },
+  {
+    "id": 7,
+    "company": "MAHINDRA",
+    "issueSize": "₹3600 Crores",
+    "priceRange": "₹50-60",
+    "minInvestment": "₹50,000",
+    "logoName": "mahindra.png"
+  }
 ]
-}

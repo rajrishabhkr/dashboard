@@ -1,9 +1,9 @@
-// src/components/Layout.tsx
 import React, { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import Footer from "./Footer";
+import { ToastProvider } from "./ToastContext";
 import "./Components.scss";
 
 const Layout: React.FC = () => {
@@ -19,19 +19,21 @@ const Layout: React.FC = () => {
   }, []);
 
   return (
-    <div className={`layout-container ${sidebarOpen ? "sidebar-open" : "sidebar-closed"}`}>
-      <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} onItemClick={() => window.innerWidth < 768 && setSidebarOpen(false)} />
-      
-      <div className="main-content-wrapper">
-        <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+    <ToastProvider>
+      <div className={`layout-container ${sidebarOpen ? "sidebar-open" : "sidebar-closed"}`}>
+        <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} onItemClick={() => window.innerWidth < 768 && setSidebarOpen(false)} />
         
-        <main className="content">
-          <Outlet />
-        </main>
-        
-        <Footer />
+        <div className="main-content-wrapper">
+          <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+          
+          <main className="content">
+            <Outlet />
+          </main>
+          
+          <Footer />
+        </div>
       </div>
-    </div>
+    </ToastProvider>
   );
 };
 

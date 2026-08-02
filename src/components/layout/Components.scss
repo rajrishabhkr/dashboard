@@ -176,9 +176,18 @@
   }
 
   .logo-img {
-    height: 32px;
-    width: auto;
-    border-radius: 4px;
+    height: 38px;
+    width: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid $secondary-color;
+    box-shadow: 0 0 10px rgba($secondary-color, 0.5);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: 0 0 15px $primary-color;
+    }
   }
 
   .app-title {

@@ -9,7 +9,21 @@ import swiggyLogo from '../../../public/images/logo/swiggy.png';
 import tataLogo from '../../../public/images/logo/tata.png';
 import mahindraLogo from '../../../public/images/logo/mahindra.png';
 
-const ipoDetails: Record<number, any> = {
+interface IPODetailItem {
+  company: string;
+  issueSize: string;
+  priceRange: string;
+  minAmount: string;
+  lotSize: string;
+  issueDates: string;
+  listedPrice: string;
+  listingGain: string;
+  logo: string;
+  about: string;
+  keyHighlights: string[];
+}
+
+const ipoDetails: Record<number, IPODetailItem> = {
   1: {
     company: 'GO AIR',
     issueSize: '₹3600 Crores',

@@ -12,18 +12,26 @@
   box-shadow: $shadow;
 }
 
-.stock-title, .stock-detail-title {
-  color: $primary-color;
+.ipo-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
-  font-size: 1.8rem;
+  flex-wrap: wrap;
+  gap: 15px;
+
+  .stock-title {
+    margin-bottom: 0;
+  }
 }
 
-.stock-section-title {
-  color: $secondary-color;
-  margin: 20px 0 15px;
-  font-size: 1.4rem;
-  border-bottom: 2px solid $secondary-color;
-  padding-bottom: 5px;
+.stock-card-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid $border-color;
 }
 
 // IPO List styles
@@ -193,5 +201,227 @@
   .stock-detail-logo {
     width: 80px;
     height: 80px;
+  }
+}
+
+// Tool Page Styles (Stopwatch & Counter)
+.tool-page-container {
+  .tool-page-header {
+    margin-bottom: 25px;
+    
+    .tool-page-subtitle {
+      color: $text-muted;
+      font-size: 1rem;
+    }
+  }
+
+  .single-tool-wrapper {
+    max-width: 580px;
+    margin: 0 auto 30px auto;
+  }
+
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+  }
+
+  .tool-card {
+    background: color.adjust($element-bg, $lightness: 2%);
+    border: 1px solid $border-color;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+
+    .tool-card-title {
+      font-size: 1.3rem;
+      color: $light;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      i {
+        color: $primary-color;
+      }
+    }
+  }
+
+  .counter-display {
+    font-size: 3.5rem;
+    font-weight: 700;
+    text-align: center;
+    color: $primary-color;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-family: monospace;
+  }
+
+  .counter-step-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    color: $text-muted;
+
+    .step-input {
+      width: 70px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid $border-color;
+      background: $dark;
+      color: $light;
+      text-align: center;
+    }
+  }
+
+  .stopwatch-display {
+    font-size: 3.2rem;
+    font-weight: 700;
+    text-align: center;
+    color: $secondary-color;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-family: monospace;
+    transition: color 0.3s ease;
+
+    &.active {
+      color: $success;
+      animation: pulse-border 2s infinite;
+    }
+  }
+
+  .tool-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    &.secondary-buttons {
+      margin-top: 10px;
+    }
+
+    .tool-btn {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.15s ease, background-color 0.2s ease;
+
+      &:hover:not(:disabled) {
+        transform: translateY(-2px);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      &.btn-increment {
+        background-color: $success;
+        color: white;
+      }
+      &.btn-decrement {
+        background-color: $danger;
+        color: white;
+      }
+      &.btn-start {
+        background-color: $success;
+        color: white;
+      }
+      &.btn-pause {
+        background-color: $warning;
+        color: $dark;
+      }
+      &.btn-lap {
+        background-color: $secondary-color;
+        color: white;
+      }
+      &.btn-reset {
+        background-color: color.adjust($element-bg, $lightness: 10%);
+        color: $light;
+      }
+    }
+  }
+
+  .laps-container {
+    margin-top: 20px;
+    border-top: 1px solid $border-color;
+    padding-top: 15px;
+
+    h3 {
+      font-size: 1rem;
+      color: $text-muted;
+      margin-bottom: 10px;
+    }
+
+    .laps-list {
+      list-style: none;
+      padding: 0;
+      max-height: 150px;
+      overflow-y: auto;
+
+      .lap-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 12px;
+        background: rgba(0, 0, 0, 0.15);
+        border-radius: 6px;
+        margin-bottom: 6px;
+        font-family: monospace;
+
+        .lap-number {
+          color: $text-muted;
+        }
+        .lap-time {
+          color: $light;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+
+  .tool-preset-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 15px 0;
+    flex-wrap: wrap;
+
+    .preset-label {
+      color: $text-muted;
+      font-size: 0.85rem;
+    }
+
+    .preset-btn {
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid $border-color;
+      background: $dark;
+      color: $light;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.2s;
+
+      &:hover {
+        background: $primary-color;
+      }
+    }
+  }
+
+  .tool-back-link {
+    text-align: center;
+    margin-top: 20px;
   }
 }

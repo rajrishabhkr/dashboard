@@ -9,12 +9,20 @@ const TicTacToe: React.FC = () => {
   const [celebrate, setCelebrate] = useState(false);
   const [winningLine, setWinningLine] = useState<number[]>([]);
 
+  const winInfo = calculateWinner(squares);
+  const winner = winInfo?.winner || null;
+
   const handleClick = (i: number) => {
-    if (squares[i] || calculateWinner(squares)) return;
+    if (squares[i] || winInfo) return;
     const newSquares = squares.slice();
     newSquares[i] = xIsNext ? 'X' : 'O';
     setSquares(newSquares);
     setXIsNext(!xIsNext);
+    
+    const newWinInfo = calculateWinner(newSquares);
+    if (newWinInfo) {
+      setWinningLine(newWinInfo.line);
+    }
   };
 
   const resetGame = () => {
@@ -24,7 +32,6 @@ const TicTacToe: React.FC = () => {
     setWinningLine([]);
   };
 
-  const winner = calculateWinner(squares);
   const status = winner
     ? `Winner: ${winner}`
     : squares.every((square) => square)
@@ -34,7 +41,8 @@ const TicTacToe: React.FC = () => {
   useEffect(() => {
     if (winner) {
       setCelebrate(true);
-      setTimeout(() => setCelebrate(false), 5000);
+      const timer = setTimeout(() => setCelebrate(false), 5000);
+      return () => clearTimeout(timer);
     }
   }, [winner]);
 
@@ -69,6 +77,7 @@ const TicTacToe: React.FC = () => {
               className={`square-button ${value || winner ? 'disabled' : ''} ${
                 isWinningSquare(index) ? 'winning-square' : ''
               }`}
+              data-value={value || undefined}
               onClick={() => handleClick(index)}
               disabled={!!value || !!winner}
             >
@@ -89,7 +98,7 @@ const TicTacToe: React.FC = () => {
   );
 };
 
-const calculateWinner = (squares: Array<string | null>): string | null => {
+const calculateWinner = (squares: Array<string | null>): { winner: string; line: number[] } | null => {
   const lines = [
     [0, 1, 2],
     [3, 4, 5],
@@ -102,7 +111,7 @@ const calculateWinner = (squares: Array<string | null>): string | null => {
   ];
   for (const [a, b, c] of lines) {
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      return { winner: squares[a], line: [a, b, c] };
     }
   }
   return null;

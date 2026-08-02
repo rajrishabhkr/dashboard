@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './Calculator.scss';
 
 // Safe calculation function using math expression parser
@@ -18,7 +18,7 @@ const calculate = (expression: string): string => {
     if (!isFinite(result)) throw new Error('Math error');
     
     return result.toString();
-  } catch (error) {
+  } catch {
     return 'Error';
   }
 };
@@ -27,7 +27,7 @@ const Calculator: React.FC = () => {
   const [input, setInput] = useState<string>('');
   const [result, setResult] = useState<string>('');
 
-  const handleButtonClick = (value: string) => {
+  const handleButtonClick = useCallback((value: string) => {
     if (value === '=') {
       setResult(calculate(input));
     } else if (value === 'C') {
@@ -45,7 +45,7 @@ const Calculator: React.FC = () => {
       }
       setInput((prev) => prev + value);
     }
-  };
+  }, [input]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -68,7 +68,7 @@ const Calculator: React.FC = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [input]);
+  }, [handleButtonClick]);
 
   const buttonRows = [
     ['7', '8', '9', '/', '('],

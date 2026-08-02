@@ -11,6 +11,11 @@ import {
   SportsEsports,
   Calculate,
   ViewInAr,
+  Timer,
+  Extension,
+  Style,
+  PlusOne,
+  VideogameAsset,
   ChevronLeft,
 } from "@mui/icons-material";
 import "./Components.scss";
@@ -30,10 +35,22 @@ const navItems = [
     ]
   },
   {
-    section: "Stocks",
+    section: "Tools & Stocks",
     items: [
       { icon: <ShowChart />, label: "IPO List", path: "/ipolist" },
-      { icon: <Calculate />, label: "Calculator", path: "/calculator" }
+      { icon: <Calculate />, label: "Calculator", path: "/calculator" },
+      { icon: <PlusOne />, label: "Digital Counter", path: "/counter" },
+      { icon: <Timer />, label: "Precision Stopwatch", path: "/stopwatch" }
+    ]
+  },
+  {
+    section: "Games",
+    items: [
+      { icon: <SportsEsports />, label: "Tic Tac Toe", path: "/tictactoe" },
+      { icon: <ViewInAr />, label: "3D Cube", path: "/3dcube" },
+      { icon: <VideogameAsset />, label: "Snake Game", path: "/snake" },
+      { icon: <Extension />, label: "Memory Match", path: "/memory-match" },
+      { icon: <Style />, label: "Color Rush", path: "/color-rush" }
     ]
   },
   {
@@ -42,13 +59,6 @@ const navItems = [
       { icon: <People />, label: "Students", path: "/students" },
       { icon: <School />, label: "Teachers", path: "/teachers" },
       { icon: <CalendarToday />, label: "Attendance", path: "/attendance" }
-    ]
-  },
-  {
-    section: "Games",
-    items: [
-      { icon: <SportsEsports />, label: "Tic Tac Toe", path: "/tictactoe" },
-      { icon: <ViewInAr />, label: "3D Cube", path: "/3dcube" }
     ]
   }
 ];
