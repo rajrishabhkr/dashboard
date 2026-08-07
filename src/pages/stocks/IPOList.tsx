@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Stocks.scss';
 import initialIpoData from '../../store/ipoData.json';
+import { useToast } from '../../components/layout/ToastContext';
 
 import goairLogo from '../../../public/images/logo/goair.png';
 import oyoLogo from '../../../public/images/logo/oyo.png';
@@ -34,6 +35,7 @@ const logoMap: Record<string, string> = {
 const STORAGE_KEY = 'dashboard_ipo_data';
 
 const IPOList: React.FC = () => {
+  const { showToast } = useToast();
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 768);
   const [ipoList, setIpoList] = useState<IPOItem[]>(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -73,24 +75,28 @@ const IPOList: React.FC = () => {
   const handleAddIpo = () => {
     if (!newIpo.company.trim()) return;
     const newId = ipoList.length ? Math.max(...ipoList.map(i => i.id)) + 1 : 1;
+    const companyName = newIpo.company.trim().toUpperCase();
     setIpoList([
       ...ipoList,
       {
         id: newId,
-        company: newIpo.company.trim().toUpperCase(),
+        company: companyName,
         issueSize: newIpo.issueSize.trim() || '₹1000 Crores',
         priceRange: newIpo.priceRange.trim() || '₹100-120',
         minInvestment: newIpo.minInvestment.trim() || '₹15,000',
         logoName: 'tata.png'
       }
     ]);
+    showToast(`Added new IPO stock: ${companyName}`, 'success');
     setNewIpo({ company: '', issueSize: '', priceRange: '', minInvestment: '' });
     setOpenDialog(false);
   };
 
   const handleDeleteIpo = (id: number) => {
     if (window.confirm('Are you sure you want to remove this IPO stock?')) {
+      const targetCompany = ipoList.find(i => i.id === id)?.company || 'Stock';
       setIpoList(ipoList.filter(item => item.id !== id));
+      showToast(`Removed IPO stock: ${targetCompany}`, 'warning');
     }
   };
 
@@ -129,39 +135,41 @@ const IPOList: React.FC = () => {
             ))}
           </div>
         ) : (
-          <table className="stock-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Company</th>
-                <th>Issue Size</th>
-                <th>Price Range</th>
-                <th>Min Investment</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {ipoList.map((ipo) => (
-                <tr key={ipo.id} className="stock-table-row">
-                  <td>#{ipo.id}</td>
-                  <td>
-                    <Link to={`/ipolist/details/${ipo.id}`} className="stock-company-link">
-                      <img src={getLogo(ipo)} alt={ipo.company} className="stock-logo" />
-                      {ipo.company}
-                    </Link>
-                  </td>
-                  <td>{ipo.issueSize}</td>
-                  <td>{ipo.priceRange}</td>
-                  <td>{ipo.minInvestment}</td>
-                  <td>
-                    <button onClick={() => handleDeleteIpo(ipo.id)} className="school-delete-button">
-                      Remove
-                    </button>
-                  </td>
+          <div className="stock-table-container">
+            <table className="stock-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Company</th>
+                  <th>Issue Size</th>
+                  <th>Price Range</th>
+                  <th>Min Investment</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {ipoList.map((ipo) => (
+                  <tr key={ipo.id} className="stock-table-row">
+                    <td>#{ipo.id}</td>
+                    <td>
+                      <Link to={`/ipolist/details/${ipo.id}`} className="stock-company-link">
+                        <img src={getLogo(ipo)} alt={ipo.company} className="stock-logo" />
+                        <span>{ipo.company}</span>
+                      </Link>
+                    </td>
+                    <td>{ipo.issueSize}</td>
+                    <td>{ipo.priceRange}</td>
+                    <td>{ipo.minInvestment}</td>
+                    <td>
+                      <button onClick={() => handleDeleteIpo(ipo.id)} className="school-delete-button">
+                        Remove
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
 

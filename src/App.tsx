@@ -8,6 +8,7 @@ import Teachers from './pages/school/Teachers';
 import Attendance from './pages/school/Attendance';
 import TicTacToe from './pages/games/TicTacToe';
 import Cube3D from './pages/games/Cube3D';
+import RubiksCube from './pages/games/RubiksCube';
 import MemoryMatch from './pages/games/MemoryMatch';
 import ColorRush from './pages/games/ColorRush';
 import SnakeGame from './pages/games/SnakeGame';
@@ -29,6 +30,7 @@ const App = () => {
           <Route path="attendance" element={<Attendance />} />
           <Route path="tictactoe" element={<TicTacToe />} />
           <Route path="3dcube" element={<Cube3D />} />
+          <Route path="rubiks-cube" element={<RubiksCube />} />
           <Route path="snake" element={<SnakeGame />} />
           <Route path="memory-match" element={<MemoryMatch />} />
           <Route path="color-rush" element={<ColorRush />} />

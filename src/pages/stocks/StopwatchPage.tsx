@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Stocks.scss';
+import { useToast } from '../../components/layout/ToastContext';
 
 interface Lap {
   id: number;
@@ -9,6 +10,7 @@ interface Lap {
 }
 
 const StopwatchPage: React.FC = () => {
+  const { showToast } = useToast();
   const [time, setTime] = useState<number>(0);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [laps, setLaps] = useState<Lap[]>([]);
@@ -39,14 +41,16 @@ const StopwatchPage: React.FC = () => {
 
   const handleLap = () => {
     if (time > 0) {
+      const formattedTime = formatTime(time);
       setLaps((prev) => [
         {
           id: prev.length + 1,
           time,
-          formatted: formatTime(time),
+          formatted: formattedTime,
         },
         ...prev,
       ]);
+      showToast(`Lap ${laps.length + 1} recorded: ${formattedTime}`, 'success');
     }
   };
 
@@ -54,6 +58,7 @@ const StopwatchPage: React.FC = () => {
     setIsRunning(false);
     setTime(0);
     setLaps([]);
+    showToast('Stopwatch reset', 'info');
   };
 
   return (

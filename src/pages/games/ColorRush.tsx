@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import './Games.scss';
+import { useToast } from '../../components/layout/ToastContext';
 
 const COLORS = [
   { id: 'red', color: '#ff4757', lightColor: '#ff6b81', label: '🔴 Red' },
@@ -10,6 +11,7 @@ const COLORS = [
 ];
 
 const ColorRush: React.FC = () => {
+  const { showToast } = useToast();
   const [sequence, setSequence] = useState<string[]>([]);
   const [userSequence, setUserSequence] = useState<string[]>([]);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -30,6 +32,7 @@ const ColorRush: React.FC = () => {
     setCombo(1);
     setIsPlaying(true);
     setMessage('Watch the pattern carefully...');
+    showToast('Color Rush round started! ⚡', 'info');
     addNewColor([]);
   };
 
@@ -81,6 +84,9 @@ const ColorRush: React.FC = () => {
       if (score > highScore) {
         setHighScore(score);
         localStorage.setItem('color_rush_highscore', String(score));
+        showToast(`🏆 NEW HIGH SCORE: ${score} pts!`, 'success');
+      } else {
+        showToast(`Game Over! Score: ${score}`, 'warning');
       }
       return;
     }

@@ -21,6 +21,9 @@ const Layout: React.FC = () => {
   return (
     <ToastProvider>
       <div className={`layout-container ${sidebarOpen ? "sidebar-open" : "sidebar-closed"}`}>
+        {sidebarOpen && window.innerWidth < 768 && (
+          <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} />
+        )}
         <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} onItemClick={() => window.innerWidth < 768 && setSidebarOpen(false)} />
         
         <div className="main-content-wrapper">

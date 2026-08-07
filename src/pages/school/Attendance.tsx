@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './SchoolInfo.scss';
 import initialAttendanceData from '../../store/attendanceData.json';
+import { useToast } from '../../components/layout/ToastContext';
 
 interface AttendanceRecord {
   id: number;
@@ -14,6 +15,7 @@ interface AttendanceRecord {
 const STORAGE_KEY = 'dashboard_attendance_data';
 
 const Attendance: React.FC = () => {
+  const { showToast } = useToast();
   const [records, setRecords] = useState<AttendanceRecord[]>(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -50,9 +52,14 @@ const Attendance: React.FC = () => {
   );
 
   const updateStatus = (id: number, newStatus: string) => {
+    const targetRecord = records.find(r => r.id === id);
     setRecords(records.map(record => 
       record.id === id ? {...record, status: newStatus} : record
     ));
+    if (targetRecord) {
+      const toastType = newStatus === 'Present' ? 'success' : newStatus === 'Late' ? 'warning' : 'error';
+      showToast(`Updated ${targetRecord.name}'s status to ${newStatus}`, toastType);
+    }
   };
 
   const getInitials = (name: string) => {
@@ -156,48 +163,50 @@ const Attendance: React.FC = () => {
         </select>
       </div>
 
-      <table className="school-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Role</th>
-            <th>Gender</th>
-            <th>Date</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {paginatedRecords.map(record => (
-            <tr key={record.id}>
-              <td>
-                <div className="school-avatar-name">
-                  <div 
-                    className="school-avatar"
-                    style={{ backgroundColor: getColorFromName(record.name) }}
-                  >
-                    {getInitials(record.name)}
-                  </div>
-                  {record.name}
-                </div>
-              </td>
-              <td>{record.role}</td>
-              <td>{record.gender}</td>
-              <td>{record.date}</td>
-              <td>
-                <select
-                  value={record.status}
-                  onChange={(e) => updateStatus(record.id, e.target.value)}
-                  className={`school-status-select ${record.status.toLowerCase()}`}
-                >
-                  <option value="Present">Present</option>
-                  <option value="Absent">Absent</option>
-                  <option value="Late">Late</option>
-                </select>
-              </td>
+      <div className="school-table-container">
+        <table className="school-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Role</th>
+              <th>Gender</th>
+              <th>Date</th>
+              <th>Status</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {paginatedRecords.map(record => (
+              <tr key={record.id}>
+                <td>
+                  <div className="school-avatar-name">
+                    <div 
+                      className="school-avatar"
+                      style={{ backgroundColor: getColorFromName(record.name) }}
+                    >
+                      {getInitials(record.name)}
+                    </div>
+                    {record.name}
+                  </div>
+                </td>
+                <td>{record.role}</td>
+                <td>{record.gender}</td>
+                <td>{record.date}</td>
+                <td>
+                  <select
+                    value={record.status}
+                    onChange={(e) => updateStatus(record.id, e.target.value)}
+                    className={`school-status-select ${record.status.toLowerCase()}`}
+                  >
+                    <option value="Present">Present</option>
+                    <option value="Absent">Absent</option>
+                    <option value="Late">Late</option>
+                  </select>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       <div className="school-pagination">
         <button 

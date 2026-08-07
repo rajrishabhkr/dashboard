@@ -1,5 +1,5 @@
 import React from "react";
-import { IconButton, Divider } from "@mui/material";
+import { IconButton, Divider, Tooltip } from "@mui/material";
 import { Link } from "react-router-dom";
 import {
   Dashboard,
@@ -17,6 +17,8 @@ import {
   PlusOne,
   VideogameAsset,
   ChevronLeft,
+  ChevronRight,
+  GridOn,
 } from "@mui/icons-material";
 import "./Components.scss";
 
@@ -48,6 +50,7 @@ const navItems = [
     items: [
       { icon: <SportsEsports />, label: "Tic Tac Toe", path: "/tictactoe" },
       { icon: <ViewInAr />, label: "3D Cube", path: "/3dcube" },
+      { icon: <GridOn />, label: "Rubik's Cube", path: "/rubiks-cube" },
       { icon: <VideogameAsset />, label: "Snake Game", path: "/snake" },
       { icon: <Extension />, label: "Memory Match", path: "/memory-match" },
       { icon: <Style />, label: "Color Rush", path: "/color-rush" }
@@ -67,13 +70,15 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen, onItemClick }) => {
   return (
     <aside className={`sidebar ${open ? "open" : ""}`}>
       <div className="sidebar-header">
-        <IconButton 
-          className="close-btn" 
-          onClick={() => setOpen(false)}
-          aria-label="Close sidebar"
-        >
-          <ChevronLeft />
-        </IconButton>
+        <Tooltip title={open ? "Collapse Sidebar" : "Expand Sidebar"}>
+          <IconButton 
+            className="close-btn" 
+            onClick={() => setOpen(!open)}
+            aria-label={open ? "Collapse sidebar" : "Expand sidebar"}
+          >
+            {open ? <ChevronLeft /> : <ChevronRight />}
+          </IconButton>
+        </Tooltip>
       </div>
 
       <nav className="sidebar-nav">

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './Calculator.scss';
+import { useToast } from '../../components/layout/ToastContext';
 
 // Safe calculation function using math expression parser
 const calculate = (expression: string): string => {
@@ -24,15 +25,23 @@ const calculate = (expression: string): string => {
 };
 
 const Calculator: React.FC = () => {
+  const { showToast } = useToast();
   const [input, setInput] = useState<string>('');
   const [result, setResult] = useState<string>('');
 
   const handleButtonClick = useCallback((value: string) => {
     if (value === '=') {
-      setResult(calculate(input));
+      const res = calculate(input);
+      setResult(res);
+      if (res === 'Error') {
+        showToast('Calculation Error!', 'error');
+      } else if (input) {
+        showToast(`Calculated: ${input} = ${res}`, 'success');
+      }
     } else if (value === 'C') {
       setInput('');
       setResult('');
+      showToast('Calculator cleared', 'info');
     } else if (value === '⌫') {
       setInput((prev) => prev.slice(0, -1));
     } else {
@@ -45,7 +54,7 @@ const Calculator: React.FC = () => {
       }
       setInput((prev) => prev + value);
     }
-  }, [input]);
+  }, [input, showToast]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {

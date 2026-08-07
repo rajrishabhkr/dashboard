@@ -39,9 +39,26 @@
   margin-top: 20px;
 }
 
+.stock-table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 20px;
+  border-radius: 8px;
+
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+  }
+}
+
 .stock-table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 580px;
 
   th, td {
     padding: 12px 15px;

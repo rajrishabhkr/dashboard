@@ -204,57 +204,59 @@ const Teachers: React.FC = () => {
       </div>
 
       {viewMode === 'list' ? (
-        <table className="school-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Age</th>
-              <th>Subject</th>
-              <th>Gender</th>
-              <th>Email</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedTeachers.map(teacher => (
-              <tr key={teacher.id}>
-                <td>#{teacher.id}</td>
-                <td>
-                  <div className="school-avatar-name">
-                    <div 
-                      className="school-avatar"
-                      style={{ backgroundColor: getColorFromName(teacher.name) }}
-                    >
-                      {getInitials(teacher.name)}
-                    </div>
-                    {teacher.name}
-                  </div>
-                </td>
-                <td>{teacher.age}</td>
-                <td><span className="subject-badge">{teacher.subject}</span></td>
-                <td>{teacher.gender}</td>
-                <td>{teacher.email}</td>
-                <td>
-                  <div className="action-buttons-group">
-                    <button 
-                      onClick={() => handleEditClick(teacher)}
-                      className="school-edit-button"
-                    >
-                      Edit
-                    </button>
-                    <button 
-                      onClick={() => handleRemoveTeacher(teacher.id)}
-                      className="school-delete-button"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </td>
+        <div className="school-table-container">
+          <table className="school-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Subject</th>
+                <th>Gender</th>
+                <th>Email</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {paginatedTeachers.map(teacher => (
+                <tr key={teacher.id}>
+                  <td>#{teacher.id}</td>
+                  <td>
+                    <div className="school-avatar-name">
+                      <div 
+                        className="school-avatar"
+                        style={{ backgroundColor: getColorFromName(teacher.name) }}
+                      >
+                        {getInitials(teacher.name)}
+                      </div>
+                      {teacher.name}
+                    </div>
+                  </td>
+                  <td>{teacher.age}</td>
+                  <td><span className="subject-badge">{teacher.subject}</span></td>
+                  <td>{teacher.gender}</td>
+                  <td>{teacher.email}</td>
+                  <td>
+                    <div className="action-buttons-group">
+                      <button 
+                        onClick={() => handleEditClick(teacher)}
+                        className="school-edit-button"
+                      >
+                        Edit
+                      </button>
+                      <button 
+                        onClick={() => handleRemoveTeacher(teacher.id)}
+                        className="school-delete-button"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : (
         <div className="school-grid">
           {paginatedTeachers.map(teacher => (

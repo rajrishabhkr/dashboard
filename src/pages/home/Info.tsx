@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import './Home.scss';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { Link } from 'react-router-dom';
+import { useToast } from '../../components/layout/ToastContext';
 
 const Info: React.FC = () => {
+  const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState('daily');
 
   // Task data
@@ -34,9 +36,15 @@ const Info: React.FC = () => {
   const COLORS = ['#2ed573', '#ff4757'];
 
   const toggleTask = (id: number) => {
-    setTasks(tasks.map(task => 
-      task.id === id ? { ...task, completed: !task.completed } : task
-    ));
+    const updated = tasks.map(task => {
+      if (task.id === id) {
+        const nextStatus = !task.completed;
+        showToast(`Task "${task.name}" marked as ${nextStatus ? 'Completed ✅' : 'Pending ⏳'}`, 'info');
+        return { ...task, completed: nextStatus };
+      }
+      return task;
+    });
+    setTasks(updated);
   };
 
   return (

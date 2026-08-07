@@ -5,6 +5,7 @@ import { OrbitControls } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import './Games.scss';
+import { useToast } from '../../components/layout/ToastContext';
 
 const Cube = ({ color, isAnimating }: { color: string; isAnimating: boolean }) => {
   const meshRef = React.useRef<THREE.Mesh>(null);
@@ -25,6 +26,7 @@ const Cube = ({ color, isAnimating }: { color: string; isAnimating: boolean }) =
 };
 
 const Cube3D: React.FC = () => {
+  const { showToast } = useToast();
   const [cubeColors, setCubeColors] = useState(['#ff0000', '#0000ff']);
   const [isAnimating, setIsAnimating] = useState(true);
 
@@ -33,10 +35,13 @@ const Cube3D: React.FC = () => {
       `hsl(${Math.random() * 360}, 100%, 50%)`,
       `hsl(${Math.random() * 360}, 100%, 50%)`,
     ]);
+    showToast('Updated 3D Cube Material Palette! 🎨', 'success');
   };
 
   const toggleAnimation = () => {
-    setIsAnimating(!isAnimating);
+    const nextVal = !isAnimating;
+    setIsAnimating(nextVal);
+    showToast(`3D Cube rotation ${nextVal ? 'Resumed ▶️' : 'Paused ⏸️'}`, 'info');
   };
 
   return (

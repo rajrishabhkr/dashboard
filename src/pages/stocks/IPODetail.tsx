@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import './Stocks.scss';
+import { useToast } from '../../components/layout/ToastContext';
 import goairLogo from '../../../public/images/logo/goair.png';
 import oyoLogo from '../../../public/images/logo/oyo.png';
 import zomatoLogo from '../../../public/images/logo/zomato.png';
@@ -146,18 +147,38 @@ const ipoDetails: Record<number, IPODetailItem> = {
 };
 
 const IPODetail: React.FC = () => {
+  const { showToast } = useToast();
   const { id } = useParams<{ id: string }>();
+  const [isBookmarked, setIsBookmarked] = useState(false);
   const ipo = ipoDetails[Number(id)];
 
   if (!ipo) {
     return <div className="stock-not-found">IPO not found</div>;
   }
 
+  const handleApply = () => {
+    showToast(`Successfully registered application interest for ${ipo.company}! 🚀`, 'success');
+  };
+
+  const handleBookmark = () => {
+    const nextVal = !isBookmarked;
+    setIsBookmarked(nextVal);
+    showToast(nextVal ? `Added ${ipo.company} to Watchlist ⭐` : `Removed ${ipo.company} from Watchlist`, 'info');
+  };
+
   return (
     <div className="stock-detail-container">
       <div className="stock-detail-header">
         <img src={ipo.logo} alt={ipo.company} className="stock-detail-logo" />
         <h1 className="stock-detail-title">{ipo.company}</h1>
+        <div style={{ marginLeft: 'auto', display: 'flex', gap: '10px' }}>
+          <button className="school-add-button" onClick={handleApply}>
+            <i className="fas fa-paper-plane"></i> Apply Now
+          </button>
+          <button className="school-edit-button" onClick={handleBookmark}>
+            <i className={`fa${isBookmarked ? 's' : 'r'} fa-star`}></i> {isBookmarked ? 'Saved' : 'Bookmark'}
+          </button>
+        </div>
       </div>
 
       <div className="stock-detail-section">

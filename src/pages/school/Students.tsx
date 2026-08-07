@@ -200,57 +200,59 @@ const Students: React.FC = () => {
       </div>
 
       {viewMode === 'list' ? (
-        <table className="school-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Age</th>
-              <th>Grade</th>
-              <th>Gender</th>
-              <th>Email</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedStudents.map(student => (
-              <tr key={student.id}>
-                <td>#{student.id}</td>
-                <td>
-                  <div className="school-avatar-name">
-                    <div 
-                      className="school-avatar"
-                      style={{ backgroundColor: getColorFromName(student.name) }}
-                    >
-                      {getInitials(student.name)}
-                    </div>
-                    {student.name}
-                  </div>
-                </td>
-                <td>{student.age}</td>
-                <td><span className={`grade-badge grade-${student.grade.toLowerCase()}`}>{student.grade}</span></td>
-                <td>{student.gender}</td>
-                <td>{student.email}</td>
-                <td>
-                  <div className="action-buttons-group">
-                    <button 
-                      onClick={() => handleEditClick(student)}
-                      className="school-edit-button"
-                    >
-                      Edit
-                    </button>
-                    <button 
-                      onClick={() => handleRemoveStudent(student.id)}
-                      className="school-delete-button"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </td>
+        <div className="school-table-container">
+          <table className="school-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Grade</th>
+                <th>Gender</th>
+                <th>Email</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {paginatedStudents.map(student => (
+                <tr key={student.id}>
+                  <td>#{student.id}</td>
+                  <td>
+                    <div className="school-avatar-name">
+                      <div 
+                        className="school-avatar"
+                        style={{ backgroundColor: getColorFromName(student.name) }}
+                      >
+                        {getInitials(student.name)}
+                      </div>
+                      {student.name}
+                    </div>
+                  </td>
+                  <td>{student.age}</td>
+                  <td><span className={`grade-badge grade-${student.grade.toLowerCase()}`}>{student.grade}</span></td>
+                  <td>{student.gender}</td>
+                  <td>{student.email}</td>
+                  <td>
+                    <div className="action-buttons-group">
+                      <button 
+                        onClick={() => handleEditClick(student)}
+                        className="school-edit-button"
+                      >
+                        Edit
+                      </button>
+                      <button 
+                        onClick={() => handleRemoveStudent(student.id)}
+                        className="school-delete-button"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : (
         <div className="school-grid">
           {paginatedStudents.map(student => (

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Stocks.scss';
+import { useToast } from '../../components/layout/ToastContext';
 
 const CounterPage: React.FC = () => {
+  const { showToast } = useToast();
   const [count, setCount] = useState<number>(0);
   const [step, setStep] = useState<number>(1);
   const [history, setHistory] = useState<number[]>([0]);
@@ -10,6 +12,11 @@ const CounterPage: React.FC = () => {
   const updateCount = (newVal: number) => {
     setCount(newVal);
     setHistory((prev) => [newVal, ...prev.slice(0, 9)]);
+    if (newVal === 0) {
+      showToast('Counter reset to 0', 'info');
+    } else {
+      showToast(`Counter updated: ${newVal}`, 'success');
+    }
   };
 
   return (

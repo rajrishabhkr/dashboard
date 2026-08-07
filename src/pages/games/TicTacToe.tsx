@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Button, Typography, Grid, Box } from '@mui/material';
 import ReactConfetti from 'react-confetti';
 import './Games.scss';
+import { useToast } from '../../components/layout/ToastContext';
 
 const TicTacToe: React.FC = () => {
+  const { showToast } = useToast();
   const [squares, setSquares] = useState<Array<string | null>>(Array(9).fill(null));
   const [xIsNext, setXIsNext] = useState<boolean>(true);
   const [celebrate, setCelebrate] = useState(false);
@@ -15,13 +17,17 @@ const TicTacToe: React.FC = () => {
   const handleClick = (i: number) => {
     if (squares[i] || winInfo) return;
     const newSquares = squares.slice();
-    newSquares[i] = xIsNext ? 'X' : 'O';
+    const currentPlayer = xIsNext ? 'X' : 'O';
+    newSquares[i] = currentPlayer;
     setSquares(newSquares);
     setXIsNext(!xIsNext);
     
     const newWinInfo = calculateWinner(newSquares);
     if (newWinInfo) {
       setWinningLine(newWinInfo.line);
+      showToast(`🎉 Player ${newWinInfo.winner} won the match!`, 'success');
+    } else if (newSquares.every((s) => s !== null)) {
+      showToast('⚔️ It is a Draw!', 'info');
     }
   };
 
@@ -30,6 +36,7 @@ const TicTacToe: React.FC = () => {
     setXIsNext(true);
     setCelebrate(false);
     setWinningLine([]);
+    showToast('Tic Tac Toe board reset', 'info');
   };
 
   const status = winner

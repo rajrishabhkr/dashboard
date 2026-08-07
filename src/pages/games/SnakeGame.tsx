@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import './Games.scss';
+import { useToast } from '../../components/layout/ToastContext';
 
 type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
 interface Position {
@@ -17,6 +18,7 @@ const INITIAL_SNAKE: Position[] = [
 
 
 const SnakeGame: React.FC = () => {
+  const { showToast } = useToast();
   const [snake, setSnake] = useState<Position[]>(INITIAL_SNAKE);
   const [food, setFood] = useState<Position>({ x: 5, y: 5 });
   const [bonusFood, setBonusFood] = useState<Position | null>(null);
@@ -56,6 +58,13 @@ const SnakeGame: React.FC = () => {
     setScore(0);
     setFood(getRandomFoodPos(INITIAL_SNAKE));
     setBonusFood(null);
+    showToast('Snake Game restarted!', 'info');
+  };
+
+  const toggleWrapMode = () => {
+    const nextVal = !wrapMode;
+    setWrapMode(nextVal);
+    showToast(`Wall mode set to: ${nextVal ? 'Wrap-Around Pass-Through' : 'Solid Wall Impact'}`, 'info');
   };
 
   // Keyboard direction controls
@@ -213,7 +222,7 @@ const SnakeGame: React.FC = () => {
         <div className="stat-box">
           <span className="stat-label">Mode:</span>
           <button
-            onClick={() => setWrapMode(!wrapMode)}
+            onClick={toggleWrapMode}
             className="snake-mode-toggle-btn"
           >
             {wrapMode ? '🌀 Wrap' : '🧱 Walls'}

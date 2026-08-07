@@ -1,6 +1,6 @@
 import React from "react";
-import { IconButton, Tooltip } from "@mui/material";
-import { Facebook, X, LinkedIn, GitHub, Instagram, Menu } from "@mui/icons-material";
+import { IconButton, Tooltip, Menu as MuiMenu, MenuItem } from "@mui/material";
+import { Facebook, X, LinkedIn, GitHub, Instagram, Menu, Share } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import "./Components.scss";
 import dashboardLogo from '../../../public/images/logo/wolf.png';
@@ -18,6 +18,9 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, setSidebarOpen }) => {
     { icon: <LinkedIn />, url: "https://linkedin.com", label: "LinkedIn" },
     { icon: <GitHub />, url: "https://github.com", label: "GitHub" },
   ];
+
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const openMenu = Boolean(anchorEl);
 
   return (
     <header className="header">
@@ -42,7 +45,7 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, setSidebarOpen }) => {
         </Link>
       </div>
 
-      <div className="header-right">
+      <div className="header-right desktop-social">
         {socialLinks.map((link, index) => (
           <Tooltip key={index} title={link.label}>
             <IconButton 
@@ -57,6 +60,43 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, setSidebarOpen }) => {
             </IconButton>
           </Tooltip>
         ))}
+      </div>
+
+      <div className="header-right mobile-social-dropdown">
+        <IconButton
+          onClick={(e) => setAnchorEl(e.currentTarget)}
+          className="social-icon"
+          aria-label="Social Links Menu"
+        >
+          <Share style={{ color: '#1e90ff' }} />
+        </IconButton>
+        <MuiMenu
+          anchorEl={anchorEl}
+          open={openMenu}
+          onClose={() => setAnchorEl(null)}
+          PaperProps={{
+            style: {
+              backgroundColor: '#1e1e1e',
+              color: '#ffffff',
+              borderRadius: '12px',
+              border: '1px solid rgba(255,255,255,0.1)'
+            }
+          }}
+        >
+          {socialLinks.map((link, index) => (
+            <MenuItem
+              key={index}
+              onClick={() => {
+                window.open(link.url, '_blank', 'noopener,noreferrer');
+                setAnchorEl(null);
+              }}
+              style={{ gap: '10px', fontSize: '0.9rem' }}
+            >
+              <span style={{ color: '#1e90ff', display: 'flex', alignItems: 'center' }}>{link.icon}</span>
+              <span>{link.label}</span>
+            </MenuItem>
+          ))}
+        </MuiMenu>
       </div>
     </header>
   );

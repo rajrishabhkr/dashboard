@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import ReactConfetti from 'react-confetti';
 import './Games.scss';
+import { useToast } from '../../components/layout/ToastContext';
 
 interface CardItem {
   id: number;
@@ -13,6 +14,7 @@ interface CardItem {
 const ALL_ICONS = ['🚀', '🎮', '🌟', '🎨', '🍕', '🐱', '🍩', '🏆', '💎', '🔥', '⚡', '🌈'];
 
 const MemoryMatch: React.FC = () => {
+  const { showToast } = useToast();
   const [difficulty, setDifficulty] = useState<number>(8); // 4 pairs (8 cards), 8 pairs (16), 12 pairs (24)
   const [cards, setCards] = useState<CardItem[]>([]);
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
@@ -47,6 +49,7 @@ const MemoryMatch: React.FC = () => {
     setIsWon(false);
     setTimer(0);
     setIsActive(false);
+    showToast('Game restarted!', 'info');
   };
 
   useEffect(() => {
@@ -97,10 +100,13 @@ const MemoryMatch: React.FC = () => {
             if (nextMatches === pairCount) {
               setIsWon(true);
               setIsActive(false);
-              const score = Math.max(10, 500 - moves * 10 - timer * 2);
+              const score = Math.max(10, 500 - (moves + 1) * 10 - timer * 2);
               if (score > bestScore) {
                 setBestScore(score);
                 localStorage.setItem('memory_match_best', String(score));
+                showToast(`🏆 NEW HIGH SCORE: ${score} pts!`, 'success');
+              } else {
+                showToast(`🎉 Puzzle solved in ${moves + 1} moves!`, 'success');
               }
             }
             return nextMatches;
