@@ -24,15 +24,46 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, setSidebarOpen }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const openMenu = Boolean(anchorEl);
 
-  const handleDownloadApk = () => {
-    const link = document.createElement("a");
-    link.href = "/rishabh-tech.apk";
-    link.download = "rishabh-tech.apk";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    showToast("Downloading Rishabh Tech APK... 🚀", "success");
+  const handleDownloadApk = async () => {
     setAnchorEl(null);
+    try {
+      showToast("Starting Rishabh Tech APK download... 🚀", "info");
+      const baseUrl = import.meta.env.BASE_URL.endsWith('/')
+        ? import.meta.env.BASE_URL
+        : `${import.meta.env.BASE_URL}/`;
+      const apkUrl = `${baseUrl}rishabh-tech.apk`;
+
+      const response = await fetch(apkUrl);
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
+      }
+      const blob = await response.blob();
+      const apkBlob = new Blob([blob], { type: 'application/vnd.android.package-archive' });
+      const blobUrl = window.URL.createObjectURL(apkBlob);
+
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = "rishabh-tech.apk";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+
+      showToast("Rishabh Tech APK downloaded! 📱", "success");
+    } catch (err) {
+      console.error("APK download error:", err);
+      // Fallback direct link with baseUrl
+      const baseUrl = import.meta.env.BASE_URL.endsWith('/')
+        ? import.meta.env.BASE_URL
+        : `${import.meta.env.BASE_URL}/`;
+      const link = document.createElement("a");
+      link.href = `${baseUrl}rishabh-tech.apk`;
+      link.download = "rishabh-tech.apk";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast("Downloading APK... 🚀", "info");
+    }
   };
 
   return (

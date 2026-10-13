@@ -59,6 +59,45 @@ const Home: React.FC = () => {
     showToast(`Enlarged ${title} Logo`, 'info');
   };
 
+  const handleDownloadApk = async () => {
+    setSocialDropdownOpen(false);
+    try {
+      showToast("Starting Rishabh Tech APK download... 🚀", "info");
+      const baseUrl = import.meta.env.BASE_URL.endsWith('/')
+        ? import.meta.env.BASE_URL
+        : `${import.meta.env.BASE_URL}/`;
+      const apkUrl = `${baseUrl}rishabh-tech.apk`;
+
+      const response = await fetch(apkUrl);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const blob = await response.blob();
+      const apkBlob = new Blob([blob], { type: 'application/vnd.android.package-archive' });
+      const blobUrl = window.URL.createObjectURL(apkBlob);
+
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = "rishabh-tech.apk";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+
+      showToast("Rishabh Tech APK downloaded! 📱", "success");
+    } catch (err) {
+      console.error("APK download error:", err);
+      const baseUrl = import.meta.env.BASE_URL.endsWith('/')
+        ? import.meta.env.BASE_URL
+        : `${import.meta.env.BASE_URL}/`;
+      const link = document.createElement("a");
+      link.href = `${baseUrl}rishabh-tech.apk`;
+      link.download = "rishabh-tech.apk";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast("Downloading APK... 🚀", "success");
+    }
+  };
+
   return (
     <div className="home-container">
       {/* Welcome Section */}
@@ -353,18 +392,23 @@ const Home: React.FC = () => {
                 >
                   <i className="fab fa-instagram"></i> Instagram
                 </a>
-                <a
-                  href="/rishabh-tech.apk"
-                  download="rishabh-tech.apk"
-                  onClick={() => {
-                    showToast('Downloading Rishabh Tech APK... 🚀', 'success');
-                    setSocialDropdownOpen(false);
-                  }}
+                <button
+                  type="button"
+                  onClick={handleDownloadApk}
                   className="apk-link-item"
-                  style={{ color: '#2ed573', fontWeight: 'bold' }}
+                  style={{
+                    color: '#2ed573',
+                    fontWeight: 'bold',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    width: '100%',
+                    textAlign: 'left',
+                    fontFamily: 'inherit',
+                  }}
                 >
                   <i className="fab fa-android"></i> Download Website APK
-                </a>
+                </button>
               </div>
             )}
           </div>
