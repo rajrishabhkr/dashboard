@@ -1,6 +1,6 @@
 import React from "react";
 import { IconButton, Tooltip, Menu as MuiMenu, MenuItem, Divider } from "@mui/material";
-import { Facebook, X, LinkedIn, GitHub, Instagram, Menu, Share, GetApp } from "@mui/icons-material";
+import { Facebook, X, LinkedIn, GitHub, Instagram, Menu, Share, GetApp, Android } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { useToast } from "./ToastContext";
 import "./Components.scss";
@@ -109,29 +109,45 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, setSidebarOpen }) => {
             onClick={handleDownloadApk}
             className="social-icon apk-desktop-btn"
             aria-label="Download Android APK"
-            style={{ padding: '6px' }}
+            style={{ color: '#2ed573', position: 'relative' }}
           >
-            <img
-              src={dashboardLogo}
-              alt="Rishabh Tech APK"
-              style={{ width: '22px', height: '22px', objectFit: 'contain', borderRadius: '50%' }}
+            <Android style={{ fontSize: '24px' }} />
+            <GetApp
+              style={{
+                position: 'absolute',
+                bottom: '2px',
+                right: '2px',
+                fontSize: '12px',
+                color: '#ffffff',
+                backgroundColor: '#2ed573',
+                borderRadius: '50%',
+                padding: '1px'
+              }}
             />
           </IconButton>
         </Tooltip>
       </div>
 
       <div className="header-right mobile-social-dropdown">
-        <Tooltip title="Download Website APK">
+        <Tooltip title="Download Website Android APK">
           <IconButton
             onClick={handleDownloadApk}
             className="social-icon apk-mobile-btn"
-            aria-label="Download Website APK"
-            style={{ padding: '6px' }}
+            aria-label="Download Website Android APK"
+            style={{ color: '#2ed573', position: 'relative' }}
           >
-            <img
-              src={dashboardLogo}
-              alt="Rishabh Tech APK"
-              style={{ width: '22px', height: '22px', objectFit: 'contain', borderRadius: '50%' }}
+            <Android style={{ fontSize: '24px' }} />
+            <GetApp
+              style={{
+                position: 'absolute',
+                bottom: '2px',
+                right: '2px',
+                fontSize: '12px',
+                color: '#ffffff',
+                backgroundColor: '#2ed573',
+                borderRadius: '50%',
+                padding: '1px'
+              }}
             />
           </IconButton>
         </Tooltip>
@@ -193,11 +209,19 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, setSidebarOpen }) => {
               border: '1px solid rgba(46, 213, 115, 0.25)',
             }}
           >
-            <span style={{ display: 'flex', alignItems: 'center' }}>
-              <img
-                src={dashboardLogo}
-                alt="Rishabh Tech APK"
-                style={{ width: '24px', height: '24px', objectFit: 'contain', borderRadius: '50%' }}
+            <span style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <Android style={{ color: '#2ed573', fontSize: '24px' }} />
+              <GetApp
+                style={{
+                  position: 'absolute',
+                  bottom: '-2px',
+                  right: '-4px',
+                  fontSize: '12px',
+                  color: '#ffffff',
+                  backgroundColor: '#2ed573',
+                  borderRadius: '50%',
+                  padding: '1px'
+                }}
               />
             </span>
             <div style={{ display: 'flex', flexDirection: 'column' }}>

@@ -411,12 +411,24 @@ const Home: React.FC = () => {
                     padding: '8px 12px',
                   }}
                 >
-                  <img
-                    src={wolfLogo}
-                    alt="Rishabh Tech APK"
-                    style={{ width: '20px', height: '20px', objectFit: 'contain', borderRadius: '50%' }}
-                  />
-                  <span>Download Website APK</span>
+                  <span style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
+                    <i className="fab fa-android" style={{ fontSize: '1.25rem', color: '#2ed573' }}></i>
+                    <i
+                      className="fas fa-arrow-down"
+                      style={{
+                        position: 'absolute',
+                        bottom: '-2px',
+                        right: '-5px',
+                        fontSize: '0.6rem',
+                        color: '#ffffff',
+                        backgroundColor: '#2ed573',
+                        borderRadius: '50%',
+                        padding: '2px',
+                        lineHeight: 1,
+                      }}
+                    ></i>
+                  </span>
+                  <span>Download Website APK (Android)</span>
                 </button>
               </div>
             )}
