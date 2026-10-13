@@ -1,0 +1,30 @@
+{
+  "sites": [
+    {
+      "url": "https://rajrishabhkr.github.io/dashboard/",
+      "title": "Rishabh Tech"
+    }
+  ],
+  "other": "https://rajrishabhkr.github.io/dashboard/",
+  "match": [
+    ["host", "equals", "rajrishabhkr.github.io"],
+    ["host", "endsWith", "github.io"]
+  ],
+  "skip": [
+    ["path", "endsWith", ".epub"],
+    ["query", "contains", "type=epub"]
+  ],
+  "remote_debug": false,
+  "console_log": false,
+  "js_interface": true,
+  "context_menu": false,
+  "not_matching": false,
+  "local_sites": true,
+  "update_zip": "",
+  "web_settings": {
+    "JavaScriptEnabled": true,
+    "DomStorageEnabled": true
+  },
+  "source": "assets",
+  "timestamp": "2026-10-13T12:00:00Z"
+}

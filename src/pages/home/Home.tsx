@@ -405,9 +405,18 @@ const Home: React.FC = () => {
                     width: '100%',
                     textAlign: 'left',
                     fontFamily: 'inherit',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    padding: '8px 12px',
                   }}
                 >
-                  <i className="fab fa-android"></i> Download Website APK
+                  <img
+                    src={wolfLogo}
+                    alt="Rishabh Tech APK"
+                    style={{ width: '20px', height: '20px', objectFit: 'contain', borderRadius: '50%' }}
+                  />
+                  <span>Download Website APK</span>
                 </button>
               </div>
             )}

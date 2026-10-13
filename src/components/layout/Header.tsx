@@ -1,6 +1,6 @@
 import React from "react";
 import { IconButton, Tooltip, Menu as MuiMenu, MenuItem, Divider } from "@mui/material";
-import { Facebook, X, LinkedIn, GitHub, Instagram, Menu, Share, Android, GetApp } from "@mui/icons-material";
+import { Facebook, X, LinkedIn, GitHub, Instagram, Menu, Share, GetApp } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { useToast } from "./ToastContext";
 import "./Components.scss";
@@ -109,9 +109,13 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, setSidebarOpen }) => {
             onClick={handleDownloadApk}
             className="social-icon apk-desktop-btn"
             aria-label="Download Android APK"
-            style={{ color: '#2ed573' }}
+            style={{ padding: '6px' }}
           >
-            <Android />
+            <img
+              src={dashboardLogo}
+              alt="Rishabh Tech APK"
+              style={{ width: '22px', height: '22px', objectFit: 'contain', borderRadius: '50%' }}
+            />
           </IconButton>
         </Tooltip>
       </div>
@@ -122,9 +126,13 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, setSidebarOpen }) => {
             onClick={handleDownloadApk}
             className="social-icon apk-mobile-btn"
             aria-label="Download Website APK"
-            style={{ color: '#2ed573' }}
+            style={{ padding: '6px' }}
           >
-            <Android />
+            <img
+              src={dashboardLogo}
+              alt="Rishabh Tech APK"
+              style={{ width: '22px', height: '22px', objectFit: 'contain', borderRadius: '50%' }}
+            />
           </IconButton>
         </Tooltip>
 
@@ -185,8 +193,12 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, setSidebarOpen }) => {
               border: '1px solid rgba(46, 213, 115, 0.25)',
             }}
           >
-            <span style={{ color: '#2ed573', display: 'flex', alignItems: 'center' }}>
-              <Android />
+            <span style={{ display: 'flex', alignItems: 'center' }}>
+              <img
+                src={dashboardLogo}
+                alt="Rishabh Tech APK"
+                style={{ width: '24px', height: '24px', objectFit: 'contain', borderRadius: '50%' }}
+              />
             </span>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>

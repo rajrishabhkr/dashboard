@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Rishabh Tech</title>
+    <script type="text/javascript">
+        // Direct instantaneous redirect to Rishabh Tech live mobile dashboard
+        try {
+            window.location.replace("https://rajrishabhkr.github.io/dashboard/");
+        } catch (e) {
+            window.location.href = "https://rajrishabhkr.github.io/dashboard/";
+        }
+    </script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #0f172a;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 24px;
+        }
+        .container {
+            max-width: 400px;
+            width: 100%;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 32px 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+        }
+        .logo {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            border: 3px solid #3b82f6;
+            box-shadow: 0 0 24px rgba(59, 130, 246, 0.5);
+            margin-bottom: 20px;
+            object-fit: cover;
+        }
+        h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-bottom: 8px;
+        }
+        p {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+        .loader {
+            width: 36px;
+            height: 36px;
+            border: 3px solid rgba(59, 130, 246, 0.2);
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            text-decoration: none;
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            box-shadow: 0 8px 16px rgba(37, 99, 235, 0.3);
+            transition: transform 0.2s;
+        }
+        .btn:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body onload="navigateNow()">
+    <div class="container">
+        <img src="logo.png" alt="Rishabh Tech" class="logo">
+        <h1>Rishabh Tech</h1>
+        <p>Connecting to your personal mobile web dashboard...</p>
+        <div class="loader"></div>
+        <a href="https://rajrishabhkr.github.io/dashboard/" class="btn" id="openBtn">Open Rishabh Tech</a>
+    </div>
+
+    <script type="text/javascript">
+        function navigateNow() {
+            setTimeout(function() {
+                window.location.replace("https://rajrishabhkr.github.io/dashboard/");
+            }, 100);
+        }
+        document.getElementById("openBtn").addEventListener("click", function(e) {
+            e.preventDefault();
+            window.location.replace("https://rajrishabhkr.github.io/dashboard/");
+        });
+    </script>
+</body>
+</html>
