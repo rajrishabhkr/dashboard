@@ -353,6 +353,18 @@ const Home: React.FC = () => {
                 >
                   <i className="fab fa-instagram"></i> Instagram
                 </a>
+                <a
+                  href="/rishabh-tech.apk"
+                  download="rishabh-tech.apk"
+                  onClick={() => {
+                    showToast('Downloading Rishabh Tech APK... 🚀', 'success');
+                    setSocialDropdownOpen(false);
+                  }}
+                  className="apk-link-item"
+                  style={{ color: '#2ed573', fontWeight: 'bold' }}
+                >
+                  <i className="fab fa-android"></i> Download Website APK
+                </a>
               </div>
             )}
           </div>

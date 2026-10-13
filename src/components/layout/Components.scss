@@ -288,6 +288,15 @@
       background-color: rgba(255, 255, 255, 0.1);
       transform: translateY(-2px);
     }
+
+    &.apk-mobile-btn,
+    &.apk-desktop-btn {
+      color: #2ed573;
+      &:hover {
+        background-color: rgba(46, 213, 115, 0.15);
+        color: #2ed573;
+      }
+    }
   }
 }
 
