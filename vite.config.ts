@@ -22,18 +22,52 @@ const apkPlugin = (): Plugin => ({
   },
 })
 
+// Middleware to redirect root / to /dashboard/ in local dev
+const devRedirectPlugin = (): Plugin => ({
+  name: 'dev-redirect-plugin',
+  configureServer(server) {
+    server.middlewares.use((req, res, next) => {
+      const originalUrl = req.url || '/'
+      const pathname = originalUrl.split('?')[0]
+      const search = originalUrl.includes('?') ? originalUrl.slice(originalUrl.indexOf('?')) : ''
+
+      // If accessing root or non-dashboard public paths directly in local dev
+      if (pathname === '/' || pathname === '') {
+        res.writeHead(302, { Location: `/dashboard/${search}` })
+        res.end()
+        return
+      }
+
+      // If user typed e.g. /students or /ipolist instead of /dashboard/students
+      const isInternal = pathname.startsWith('/@') || 
+                         pathname.startsWith('/src') || 
+                         pathname.startsWith('/node_modules') || 
+                         pathname.startsWith('/images') || 
+                         pathname.startsWith('/dashboard') ||
+                         pathname.includes('.')
+
+      if (!isInternal) {
+        res.writeHead(302, { Location: `/dashboard${pathname}${search}` })
+        res.end()
+        return
+      }
+
+      next()
+    })
+  },
+})
+
 // https://vite.dev/config/
 export default defineConfig({
   base: '/dashboard/',
-  plugins: [react(), apkPlugin()],
+  plugins: [react(), apkPlugin(), devRedirectPlugin()],
   server: {
     port: 5173,
-    host: 'localhost',
-    strictPort: true,
-    hmr: {
-      host: 'localhost',
-      port: 5173,
-    },
+    host: true,
+    open: '/dashboard/',
+  },
+  optimizeDeps: {
+    entries: ['index.html'],
   },
   resolve: {
     alias: {
@@ -43,10 +77,7 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `
-          @use "@/styles/variables.scss" as *;
-          @use "@/styles/mixins.scss" as *;
-        `,
+        api: 'modern-compiler',
       },
     },
   },
