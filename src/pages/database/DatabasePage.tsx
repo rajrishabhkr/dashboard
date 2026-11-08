@@ -11,6 +11,7 @@ import {
   DbMode,
 } from '../../services/supabaseClient';
 import { useToast } from '../../components/layout/ToastContext';
+import { Lock, VpnKey, Person, Visibility, VisibilityOff, Shield, ExitToApp } from '@mui/icons-material';
 
 const SCHEMA_SQL = `-- 1. Students Table
 CREATE TABLE IF NOT EXISTS public.students (
@@ -70,6 +71,57 @@ CREATE POLICY "Public full access ipo_list" ON public.ipo_list FOR ALL USING (tr
 const DatabasePage: React.FC = () => {
   const { showToast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // User Authentication from Database
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return sessionStorage.getItem('rishabh_db_auth') === 'true';
+  });
+  const [authUsername, setAuthUsername] = useState('rishabh');
+  const [authPassword, setAuthPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [authError, setAuthError] = useState('');
+  const [authenticating, setAuthenticating] = useState(false);
+  const [currentUser, setCurrentUser] = useState<{ username: string; name: string; role: string } | null>(() => {
+    const saved = sessionStorage.getItem('rishabh_db_user');
+    return saved ? JSON.parse(saved) : null;
+  });
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!authUsername.trim() || !authPassword.trim()) {
+      setAuthError('Please enter both username and password.');
+      return;
+    }
+    setAuthenticating(true);
+    setAuthError('');
+    try {
+      const res = await db.users.authenticate(authUsername, authPassword);
+      if (res.success && res.user) {
+        sessionStorage.setItem('rishabh_db_auth', 'true');
+        sessionStorage.setItem('rishabh_db_user', JSON.stringify(res.user));
+        setIsAuthenticated(true);
+        setCurrentUser(res.user);
+        showToast(`Welcome back, ${res.user.name || res.user.username}! Database Hub unlocked. 🔓`, 'success');
+        loadStats();
+      } else {
+        setAuthError(res.message || 'Authentication failed. Please verify credentials in the database.');
+        showToast('Access Denied: Invalid database credentials', 'error');
+      }
+    } catch (err: any) {
+      setAuthError(err?.message || 'Authentication failed.');
+    } finally {
+      setAuthenticating(false);
+    }
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('rishabh_db_auth');
+    sessionStorage.removeItem('rishabh_db_user');
+    setIsAuthenticated(false);
+    setCurrentUser(null);
+    setAuthPassword('');
+    showToast('Database Hub session locked 🔒', 'info');
+  };
 
   const [stats, setStats] = useState({
     studentsCount: 0,
@@ -254,6 +306,105 @@ const DatabasePage: React.FC = () => {
     showToast('PostgreSQL schema copied to clipboard! 📋', 'success');
   };
 
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-[75vh] flex items-center justify-center p-4">
+        <div className="w-full max-w-md bg-gray-900/90 backdrop-blur-xl border border-gray-700/80 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+          <div className="absolute -top-20 -left-20 w-40 h-40 bg-cyan-500/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="text-center mb-6 relative z-10">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-600 to-blue-700 mx-auto flex items-center justify-center text-white shadow-xl shadow-cyan-500/25 mb-4 border border-cyan-400/30">
+              <Lock style={{ fontSize: '32px' }} />
+            </div>
+            <h2 className="text-2xl font-black text-white tracking-tight">Database Hub</h2>
+            <p className="text-xs text-gray-400 mt-1">
+              Restricted Area. Credentials verified directly from database profile.
+            </p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-4 relative z-10">
+            {authError && (
+              <div className="p-3 bg-red-500/20 border border-red-500/40 rounded-xl text-xs text-red-300 font-medium flex items-center gap-2">
+                <i className="fas fa-exclamation-circle text-sm" />
+                <span>{authError}</span>
+              </div>
+            )}
+
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1.5">
+                Username
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                  <Person fontSize="small" />
+                </div>
+                <input
+                  type="text"
+                  value={authUsername}
+                  onChange={(e) => setAuthUsername(e.target.value)}
+                  placeholder="Enter database username"
+                  className="w-full pl-10 pr-4 py-2.5 bg-gray-800/80 border border-gray-700/80 rounded-xl text-white text-sm focus:outline-none focus:border-cyan-500 transition-colors"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1.5">
+                Password
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                  <VpnKey fontSize="small" />
+                </div>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={authPassword}
+                  onChange={(e) => setAuthPassword(e.target.value)}
+                  placeholder="Enter database password"
+                  className="w-full pl-10 pr-10 py-2.5 bg-gray-800/80 border border-gray-700/80 rounded-xl text-white text-sm focus:outline-none focus:border-cyan-500 transition-colors"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-white"
+                >
+                  {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={authenticating}
+              className="w-full py-3 mt-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-bold rounded-xl shadow-lg shadow-cyan-500/25 transition-all text-sm flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+            >
+              {authenticating ? (
+                <>
+                  <i className="fas fa-spinner fa-spin" />
+                  <span>Verifying in Database...</span>
+                </>
+              ) : (
+                <>
+                  <Shield fontSize="small" />
+                  <span>Unlock Database Hub</span>
+                </>
+              )}
+            </button>
+
+            <div className="text-center pt-2">
+              <span className="text-[11px] text-gray-500">
+                🔒 Protected by Database User Profile (IndexedDB &amp; Supabase RLS)
+              </span>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="database-page">
       <div className="db-header">
@@ -261,9 +412,25 @@ const DatabasePage: React.FC = () => {
           <h1>
             <i className="fas fa-database"></i> Database Hub & Storage Manager
           </h1>
-          <div className="deployment-pill" title="Current Deployment">
-            <span className="live-dot"></span>
-            <span>Live on GitHub Pages: <strong>rajrishabhkr.github.io/dashboard</strong></span>
+          <div className="flex items-center gap-2 flex-wrap">
+            {currentUser && (
+              <div className="flex items-center gap-1.5 bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 px-3 py-1.5 rounded-full text-xs font-bold">
+                <Person style={{ fontSize: '14px' }} />
+                <span>Admin: {currentUser.name || currentUser.username}</span>
+              </div>
+            )}
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-1 bg-red-500/20 text-red-300 border border-red-500/40 px-3 py-1.5 rounded-full text-xs font-bold hover:bg-red-500/30 transition-colors cursor-pointer"
+              title="Lock Database Hub session"
+            >
+              <ExitToApp style={{ fontSize: '14px' }} />
+              <span>Lock Session</span>
+            </button>
+            <div className="deployment-pill" title="Current Deployment">
+              <span className="live-dot"></span>
+              <span>Live on GitHub Pages: <strong>rajrishabhkr.github.io/dashboard</strong></span>
+            </div>
           </div>
         </div>
         <p className="db-subtitle">

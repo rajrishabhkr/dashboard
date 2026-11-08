@@ -38,10 +38,9 @@ const navItems = [
     ]
   },
   {
-    section: "Tools & Stocks",
+    section: "Tools",
     items: [
-      { icon: <Storage />, label: "Database Hub", path: "/database" },
-      { icon: <ShowChart />, label: "IPO List", path: "/ipolist" },
+
       { icon: <Calculate />, label: "Calculator", path: "/calculator" },
       { icon: <PlusOne />, label: "Digital Counter", path: "/counter" },
       { icon: <Timer />, label: "Precision Stopwatch", path: "/stopwatch" }
@@ -59,11 +58,18 @@ const navItems = [
     ]
   },
   {
-    section: "School Info",
+    section: "Table Info",
     items: [
       { icon: <People />, label: "Students", path: "/students" },
       { icon: <School />, label: "Teachers", path: "/teachers" },
-      { icon: <CalendarToday />, label: "Attendance", path: "/attendance" }
+      { icon: <CalendarToday />, label: "Attendance", path: "/attendance" },
+      { icon: <ShowChart />, label: "IPO List", path: "/ipolist" }
+    ]
+  },
+  {
+    section: "Database",
+    items: [
+      { icon: <Storage />, label: "Database Hub", path: "/database" }
     ]
   }
 ];

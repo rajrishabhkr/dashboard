@@ -287,6 +287,21 @@ export const db = {
       notifyDbChange();
       return newRecord;
     },
+
+    async delete(id: number): Promise<void> {
+      await localDb.attendance.delete(id);
+      const all = await localDb.attendance.toArray();
+      localStorage.setItem('dashboard_attendance_data', JSON.stringify(all));
+
+      const client = getSupabaseClient();
+      if (client) {
+        client.from('attendance').delete().eq('id', id).then(({ error }) => {
+          if (error) console.warn('Supabase attendance delete warning:', error);
+        });
+      }
+
+      notifyDbChange();
+    },
   },
 
   // ==========================================
@@ -423,6 +438,66 @@ export const db = {
       } catch (err) {
         console.warn('Failed to clear game history:', err);
       }
+    }
+  },
+
+  // ==========================================
+  // Users & Authentication Repository
+  // ==========================================
+  users: {
+    async authenticate(username: string, password: string): Promise<{ success: boolean; user?: { username: string; name: string; role: string }; message?: string }> {
+      try {
+        await localDb.initializeWithDefaults();
+        const cleanUser = username.trim().toLowerCase();
+        const cleanPass = password.trim();
+        const encoded = btoa(cleanPass);
+
+        // 1. Check local IndexedDB users table
+        const localUser = await localDb.users.where('username').equalsIgnoreCase(cleanUser).first();
+        if (localUser && localUser.passwordHash === encoded) {
+          return {
+            success: true,
+            user: { username: localUser.username, name: localUser.name, role: localUser.role }
+          };
+        }
+
+        // 2. Check Supabase cloud users table if connected
+        const client = getSupabaseClient();
+        if (client) {
+          try {
+            const { data } = await client
+              .from('users')
+              .select('*')
+              .eq('username', cleanUser)
+              .maybeSingle();
+
+            if (data && data.password_hash === encoded) {
+              await localDb.users.put({
+                username: data.username,
+                passwordHash: data.password_hash,
+                role: data.role || 'admin',
+                name: data.name || data.username,
+                createdAt: data.created_at || new Date().toISOString()
+              });
+              return {
+                success: true,
+                user: { username: data.username, name: data.name || data.username, role: data.role || 'admin' }
+              };
+            }
+          } catch (e) {
+            console.warn('Cloud user auth lookup error:', e);
+          }
+        }
+
+        return { success: false, message: 'Invalid username or password in database records.' };
+      } catch (err: any) {
+        return { success: false, message: err?.message || 'Database authentication error.' };
+      }
+    },
+
+    async getProfile(username: string) {
+      await localDb.initializeWithDefaults();
+      return await localDb.users.where('username').equalsIgnoreCase(username.trim()).first();
     }
   },
 

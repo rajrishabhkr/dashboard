@@ -53,6 +53,15 @@ export interface ConfigRecord {
   value: any;
 }
 
+export interface UserRecord {
+  id?: number;
+  username: string;
+  passwordHash: string;
+  role: string;
+  name: string;
+  createdAt: string;
+}
+
 export class RishabhTechDatabase extends Dexie {
   students!: Table<StudentRecord, number>;
   teachers!: Table<TeacherRecord, number>;
@@ -60,6 +69,7 @@ export class RishabhTechDatabase extends Dexie {
   ipo!: Table<IPORecord, number>;
   gameScores!: Table<GameScoreRecord, number>;
   config!: Table<ConfigRecord, string>;
+  users!: Table<UserRecord, number>;
 
   constructor() {
     super('RishabhTechDB');
@@ -71,6 +81,16 @@ export class RishabhTechDatabase extends Dexie {
       ipo: 'id, company, issueSize',
       gameScores: '++id, game, score, date',
       config: 'key'
+    });
+
+    this.version(2).stores({
+      students: 'id, name, grade, gender, email',
+      teachers: 'id, name, subject, gender, email',
+      attendance: 'id, name, role, gender, date, status',
+      ipo: 'id, company, issueSize',
+      gameScores: '++id, game, score, date',
+      config: 'key',
+      users: '++id, username'
     });
   }
 
@@ -106,6 +126,18 @@ export class RishabhTechDatabase extends Dexie {
         const saved = localStorage.getItem('dashboard_ipo_data');
         const seed = saved ? JSON.parse(saved) : defaultIpo;
         await this.ipo.bulkPut(seed);
+      }
+
+      // Seed admin user in database if not present
+      const userCount = await this.users.count();
+      if (userCount === 0) {
+        await this.users.add({
+          username: 'rishabh',
+          passwordHash: btoa('rishi@123'),
+          role: 'admin',
+          name: 'Rishabh Kumar',
+          createdAt: new Date().toISOString()
+        });
       }
     } catch (err) {
       console.warn('Error during database initialization with defaults:', err);

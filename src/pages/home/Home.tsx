@@ -194,7 +194,7 @@ const Home: React.FC = () => {
           
           <div className="shortcuts-categories">
             <div className="shortcut-group">
-              <h3><i className="fas fa-school"></i> School Info Directory</h3>
+              <h3><i className="fas fa-table"></i> Table Info Directory</h3>
               <div className="shortcut-grid">
                 <Link to="/students" className="shortcut-card" onClick={() => showToast('Opening Students Directory', 'info')}>
                   <div className="shortcut-icon students-icon"><i className="fas fa-user-graduate"></i></div>
@@ -217,19 +217,6 @@ const Home: React.FC = () => {
                     <span className="shortcut-desc">Daily Presence Status</span>
                   </div>
                 </Link>
-              </div>
-            </div>
-
-            <div className="shortcut-group">
-              <h3><i className="fas fa-chart-line"></i> Tools & Stocks</h3>
-              <div className="shortcut-grid">
-                <Link to="/database" className="shortcut-card" onClick={() => showToast('Opening Database Hub', 'info')}>
-                  <div className="shortcut-icon db-icon"><i className="fas fa-database"></i></div>
-                  <div className="shortcut-text">
-                    <span className="shortcut-label">Database Hub</span>
-                    <span className="shortcut-desc">Local Dexie & Supabase Sync</span>
-                  </div>
-                </Link>
                 <Link to="/ipolist" className="shortcut-card" onClick={() => showToast('Opening IPO Watchlist', 'info')}>
                   <div className="shortcut-icon ipo-icon"><i className="fas fa-coins"></i></div>
                   <div className="shortcut-text">
@@ -237,6 +224,12 @@ const Home: React.FC = () => {
                     <span className="shortcut-desc">Market Listings & Sizes</span>
                   </div>
                 </Link>
+              </div>
+            </div>
+
+            <div className="shortcut-group">
+              <h3><i className="fas fa-tools"></i> Tools</h3>
+              <div className="shortcut-grid">
                 <Link to="/calculator" className="shortcut-card" onClick={() => showToast('Opening Smart Calculator', 'info')}>
                   <div className="shortcut-icon calc-icon"><i className="fas fa-calculator"></i></div>
                   <div className="shortcut-text">
@@ -309,10 +302,22 @@ const Home: React.FC = () => {
               </div>
             </div>
           </div>
+                    <div className="shortcut-group">
+              <h3><i className="fas fa-database"></i> Database & Admin</h3>
+              <div className="shortcut-grid">
+                <Link to="/database" className="shortcut-card" onClick={() => showToast('Opening Database Hub', 'info')}>
+                  <div className="shortcut-icon db-icon"><i className="fas fa-database"></i></div>
+                  <div className="shortcut-text">
+                    <span className="shortcut-label">Database Hub</span>
+                    <span className="shortcut-desc">Local Dexie & Supabase Cloud Sync</span>
+                  </div>
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
 
-      {/* Enhanced Profile Section */}
+        {/* Enhanced Profile Section */}
       <div className="profile-section" id="profile">
         <h2>My Profile</h2>
         <div className="profile-card">
