@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './SchoolInfo.scss';
-import initialAttendanceData from '../../store/attendanceData.json';
 import { useToast } from '../../components/layout/ToastContext';
+import { db, subscribeDbChange } from '../../services/db';
 
 interface AttendanceRecord {
   id: number;
@@ -12,21 +12,27 @@ interface AttendanceRecord {
   status: string;
 }
 
-const STORAGE_KEY = 'dashboard_attendance_data';
-
 const Attendance: React.FC = () => {
   const { showToast } = useToast();
-  const [records, setRecords] = useState<AttendanceRecord[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try { return JSON.parse(saved); } catch { /* fallback */ }
-    }
-    return initialAttendanceData;
-  });
+  const [records, setRecords] = useState<AttendanceRecord[]>([]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
-  }, [records]);
+    let mounted = true;
+    const load = async () => {
+      try {
+        const data = await db.attendance.getAll();
+        if (mounted) setRecords(data);
+      } catch (err) {
+        console.warn('Failed to load attendance from DB:', err);
+      }
+    };
+    load();
+    const unsubscribe = subscribeDbChange(load);
+    return () => {
+      mounted = false;
+      unsubscribe();
+    };
+  }, []);
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState('All');
   const [statusFilter, setStatusFilter] = useState('All');
@@ -51,8 +57,9 @@ const Attendance: React.FC = () => {
     pagination.page * pagination.pageSize
   );
 
-  const updateStatus = (id: number, newStatus: string) => {
+  const updateStatus = async (id: number, newStatus: string) => {
     const targetRecord = records.find(r => r.id === id);
+    await db.attendance.updateStatus(id, newStatus);
     setRecords(records.map(record => 
       record.id === id ? {...record, status: newStatus} : record
     ));

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './SchoolInfo.scss';
-import initialStudentData from '../../store/studentData.json';
 import { useToast } from '../../components/layout/ToastContext';
+import { db, subscribeDbChange } from '../../services/db';
 
 interface Student {
   id: number;
@@ -12,21 +12,27 @@ interface Student {
   email: string;
 }
 
-const STORAGE_KEY = 'dashboard_students_data';
-
 const Students: React.FC = () => {
   const { showToast } = useToast();
-  const [students, setStudents] = useState<Student[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try { return JSON.parse(saved); } catch { /* fallback */ }
-    }
-    return initialStudentData;
-  });
+  const [students, setStudents] = useState<Student[]>([]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(students));
-  }, [students]);
+    let mounted = true;
+    const load = async () => {
+      try {
+        const data = await db.students.getAll();
+        if (mounted) setStudents(data);
+      } catch (err) {
+        console.warn('Failed to load students from DB:', err);
+      }
+    };
+    load();
+    const unsubscribe = subscribeDbChange(load);
+    return () => {
+      mounted = false;
+      unsubscribe();
+    };
+  }, []);
   const [search, setSearch] = useState('');
   const [gradeFilter, setGradeFilter] = useState('');
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
@@ -58,29 +64,26 @@ const Students: React.FC = () => {
     pagination.page * pagination.pageSize
   );
 
-  const handleRemoveStudent = (id: number) => {
+  const handleRemoveStudent = async (id: number) => {
     if (window.confirm("Are you sure you want to delete this student?")) {
       const studentName = students.find(s => s.id === id)?.name || 'Student';
-      setStudents(students.filter(student => student.id !== id));
+      await db.students.delete(id);
+      setStudents(prev => prev.filter(student => student.id !== id));
       showToast(`${studentName} removed from records`, 'warning');
     }
   };
 
-  const handleAddStudent = () => {
+  const handleAddStudent = async () => {
     if (!newStudent.name.trim() || !newStudent.email.trim()) return;
-    const newId = students.length ? Math.max(...students.map(s => s.id)) + 1 : 1;
     const addedName = newStudent.name.trim();
-    setStudents([
-      ...students,
-      {
-        id: newId,
-        name: addedName,
-        age: Number(newStudent.age) || 18,
-        grade: newStudent.grade.toUpperCase() || 'A',
-        gender: newStudent.gender || 'Male',
-        email: newStudent.email.trim()
-      }
-    ]);
+    const created = await db.students.add({
+      name: addedName,
+      age: Number(newStudent.age) || 18,
+      grade: newStudent.grade.toUpperCase() || 'A',
+      gender: newStudent.gender || 'Male',
+      email: newStudent.email.trim()
+    });
+    setStudents(prev => [...prev.filter(s => s.id !== created.id), created]);
     showToast(`Added new student: ${addedName}`, 'success');
     setNewStudent({ name: '', age: '', grade: '', gender: '', email: '' });
     setOpenDialog(false);
@@ -90,9 +93,10 @@ const Students: React.FC = () => {
     setEditingStudent({ ...student });
   };
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async () => {
     if (!editingStudent || !editingStudent.name.trim()) return;
-    setStudents(students.map(s => s.id === editingStudent.id ? editingStudent : s));
+    await db.students.update(editingStudent.id, editingStudent);
+    setStudents(prev => prev.map(s => s.id === editingStudent.id ? editingStudent : s));
     showToast(`Updated student details for ${editingStudent.name}`, 'info');
     setEditingStudent(null);
   };

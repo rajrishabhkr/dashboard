@@ -17,6 +17,7 @@ import IPODetail from './pages/stocks/IPODetail';
 import Calculator from './pages/stocks/Calculator';
 import CounterPage from './pages/stocks/CounterPage';
 import StopwatchPage from './pages/stocks/StopwatchPage';
+import DatabasePage from './pages/database/DatabasePage';
 
 const App = () => {
   return (
@@ -39,6 +40,7 @@ const App = () => {
           <Route path="calculator" element={<Calculator />} />
           <Route path="counter" element={<CounterPage />} />
           <Route path="stopwatch" element={<StopwatchPage />} />
+          <Route path="database" element={<DatabasePage />} />
         </Route>
       </Routes>
     </div>

@@ -26,6 +26,15 @@ const apkPlugin = (): Plugin => ({
 export default defineConfig({
   base: '/dashboard/',
   plugins: [react(), apkPlugin()],
+  server: {
+    port: 5173,
+    host: 'localhost',
+    strictPort: true,
+    hmr: {
+      host: 'localhost',
+      port: 5173,
+    },
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

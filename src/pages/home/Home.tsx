@@ -223,6 +223,13 @@ const Home: React.FC = () => {
             <div className="shortcut-group">
               <h3><i className="fas fa-chart-line"></i> Tools & Stocks</h3>
               <div className="shortcut-grid">
+                <Link to="/database" className="shortcut-card" onClick={() => showToast('Opening Database Hub', 'info')}>
+                  <div className="shortcut-icon db-icon"><i className="fas fa-database"></i></div>
+                  <div className="shortcut-text">
+                    <span className="shortcut-label">Database Hub</span>
+                    <span className="shortcut-desc">Local Dexie & Supabase Sync</span>
+                  </div>
+                </Link>
                 <Link to="/ipolist" className="shortcut-card" onClick={() => showToast('Opening IPO Watchlist', 'info')}>
                   <div className="shortcut-icon ipo-icon"><i className="fas fa-coins"></i></div>
                   <div className="shortcut-text">

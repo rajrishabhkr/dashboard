@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './SchoolInfo.scss';
-import initialTeacherData from '../../store/teacherData.json';
 import { useToast } from '../../components/layout/ToastContext';
+import { db, subscribeDbChange } from '../../services/db';
 
 interface Teacher {
   id: number;
@@ -12,21 +12,27 @@ interface Teacher {
   email: string;
 }
 
-const STORAGE_KEY = 'dashboard_teachers_data';
-
 const Teachers: React.FC = () => {
   const { showToast } = useToast();
-  const [teachers, setTeachers] = useState<Teacher[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try { return JSON.parse(saved); } catch { /* fallback */ }
-    }
-    return initialTeacherData;
-  });
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(teachers));
-  }, [teachers]);
+    let mounted = true;
+    const load = async () => {
+      try {
+        const data = await db.teachers.getAll();
+        if (mounted) setTeachers(data);
+      } catch (err) {
+        console.warn('Failed to load teachers from DB:', err);
+      }
+    };
+    load();
+    const unsubscribe = subscribeDbChange(load);
+    return () => {
+      mounted = false;
+      unsubscribe();
+    };
+  }, []);
   const [search, setSearch] = useState('');
   const [genderFilter, setGenderFilter] = useState('');
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
@@ -58,29 +64,26 @@ const Teachers: React.FC = () => {
     pagination.page * pagination.pageSize
   );
 
-  const handleRemoveTeacher = (id: number) => {
+  const handleRemoveTeacher = async (id: number) => {
     if (window.confirm("Are you sure you want to delete this teacher?")) {
       const teacherName = teachers.find(t => t.id === id)?.name || 'Faculty Member';
-      setTeachers(teachers.filter(teacher => teacher.id !== id));
+      await db.teachers.delete(id);
+      setTeachers(prev => prev.filter(teacher => teacher.id !== id));
       showToast(`${teacherName} removed from faculty`, 'warning');
     }
   };
 
-  const handleAddTeacher = () => {
+  const handleAddTeacher = async () => {
     if (!newTeacher.name.trim() || !newTeacher.email.trim()) return;
-    const newId = teachers.length ? Math.max(...teachers.map(t => t.id)) + 1 : 1;
     const addedName = newTeacher.name.trim();
-    setTeachers([
-      ...teachers,
-      {
-        id: newId,
-        name: addedName,
-        age: Number(newTeacher.age) || 35,
-        subject: newTeacher.subject.trim() || 'General',
-        gender: newTeacher.gender || 'Female',
-        email: newTeacher.email.trim()
-      }
-    ]);
+    const created = await db.teachers.add({
+      name: addedName,
+      age: Number(newTeacher.age) || 35,
+      subject: newTeacher.subject.trim() || 'General',
+      gender: newTeacher.gender || 'Female',
+      email: newTeacher.email.trim()
+    });
+    setTeachers(prev => [...prev.filter(t => t.id !== created.id), created]);
     showToast(`Added new faculty member: ${addedName}`, 'success');
     setNewTeacher({ name: '', age: '', subject: '', gender: '', email: '' });
     setOpenDialog(false);
@@ -90,9 +93,10 @@ const Teachers: React.FC = () => {
     setEditingTeacher({ ...teacher });
   };
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async () => {
     if (!editingTeacher || !editingTeacher.name.trim()) return;
-    setTeachers(teachers.map(t => t.id === editingTeacher.id ? editingTeacher : t));
+    await db.teachers.update(editingTeacher.id, editingTeacher);
+    setTeachers(prev => prev.map(t => t.id === editingTeacher.id ? editingTeacher : t));
     showToast(`Updated faculty details for ${editingTeacher.name}`, 'info');
     setEditingTeacher(null);
   };

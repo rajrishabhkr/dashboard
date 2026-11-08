@@ -1,0 +1,25 @@
+{
+  "students": [
+    { "id": 1, "name": "Rahul Sharma", "age": 20, "grade": "A", "gender": "Male", "email": "rahul@abc.com" },
+    { "id": 2, "name": "Priya Verma", "age": 21, "grade": "B", "gender": "Female", "email": "priya@abc.com" },
+    { "id": 3, "name": "Ankit Singh", "age": 22, "grade": "C", "gender": "Male", "email": "ankit@abc.com" },
+    { "id": 4, "name": "Sonam Gupta", "age": 19, "grade": "A", "gender": "Female", "email": "sonam@abc.com" },
+    { "id": 5, "name": "Rajesh Yadav", "age": 20, "grade": "B", "gender": "Male", "email": "rajesh@abc.com" }
+  ],
+  "teachers": [
+    { "id": 1, "name": "Dr. Ramesh Sharma", "age": 45, "subject": "Mathematics", "gender": "Male", "email": "ramesh@abc.com" },
+    { "id": 2, "name": "Ms. Pooja Singh", "age": 38, "subject": "English", "gender": "Female", "email": "pooja@abc.com" },
+    { "id": 3, "name": "Mr. Sandeep Kumar", "age": 40, "subject": "Physics", "gender": "Male", "email": "sandeep@abc.com" },
+    { "id": 4, "name": "Mrs. Anjali Verma", "age": 42, "subject": "Chemistry", "gender": "Female", "email": "anjali@abc.com" }
+  ],
+  "attendance": [
+    { "id": 1, "name": "Rahul Sharma", "role": "Student", "gender": "Male", "date": "2026-08-02", "status": "Present" },
+    { "id": 2, "name": "Priya Verma", "role": "Student", "gender": "Female", "date": "2026-08-02", "status": "Absent" },
+    { "id": 3, "name": "Ankit Singh", "role": "Student", "gender": "Male", "date": "2026-08-02", "status": "Late" }
+  ],
+  "ipo": [
+    { "id": 1, "company": "GO AIR", "issueSize": "₹3600 Crores", "priceRange": "₹50-60", "minInvestment": "₹50,000", "logoName": "goair.png" },
+    { "id": 2, "company": "OYO", "issueSize": "₹3600 Crores", "priceRange": "₹50-60", "minInvestment": "₹50,000", "logoName": "oyo.png" },
+    { "id": 3, "company": "ZOMATO", "issueSize": "₹3600 Crores", "priceRange": "₹50-60", "minInvestment": "₹50,000", "logoName": "zomato.png" }
+  ]
+}

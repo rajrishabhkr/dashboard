@@ -19,6 +19,7 @@ import {
   ChevronLeft,
   ChevronRight,
   GridOn,
+  Storage,
 } from "@mui/icons-material";
 import "./Components.scss";
 
@@ -39,6 +40,7 @@ const navItems = [
   {
     section: "Tools & Stocks",
     items: [
+      { icon: <Storage />, label: "Database Hub", path: "/database" },
       { icon: <ShowChart />, label: "IPO List", path: "/ipolist" },
       { icon: <Calculate />, label: "Calculator", path: "/calculator" },
       { icon: <PlusOne />, label: "Digital Counter", path: "/counter" },

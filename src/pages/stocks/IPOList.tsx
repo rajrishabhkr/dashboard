@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Stocks.scss';
-import initialIpoData from '../../store/ipoData.json';
 import { useToast } from '../../components/layout/ToastContext';
+import { db, subscribeDbChange } from '../../services/db';
 
 import goairLogo from '../../../public/images/logo/goair.png';
 import oyoLogo from '../../../public/images/logo/oyo.png';
@@ -32,18 +32,10 @@ const logoMap: Record<string, string> = {
   'mahindra.png': mahindraLogo,
 };
 
-const STORAGE_KEY = 'dashboard_ipo_data';
-
 const IPOList: React.FC = () => {
   const { showToast } = useToast();
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 768);
-  const [ipoList, setIpoList] = useState<IPOItem[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try { return JSON.parse(saved); } catch { /* fallback */ }
-    }
-    return initialIpoData;
-  });
+  const [ipoList, setIpoList] = useState<IPOItem[]>([]);
 
   const [openDialog, setOpenDialog] = useState(false);
   const [newIpo, setNewIpo] = useState({
@@ -54,8 +46,22 @@ const IPOList: React.FC = () => {
   });
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(ipoList));
-  }, [ipoList]);
+    let mounted = true;
+    const load = async () => {
+      try {
+        const data = await db.ipo.getAll();
+        if (mounted) setIpoList(data);
+      } catch (err) {
+        console.warn('Failed to load IPOs from DB:', err);
+      }
+    };
+    load();
+    const unsubscribe = subscribeDbChange(load);
+    return () => {
+      mounted = false;
+      unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -72,30 +78,27 @@ const IPOList: React.FC = () => {
     return item.logo || tataLogo;
   };
 
-  const handleAddIpo = () => {
+  const handleAddIpo = async () => {
     if (!newIpo.company.trim()) return;
-    const newId = ipoList.length ? Math.max(...ipoList.map(i => i.id)) + 1 : 1;
     const companyName = newIpo.company.trim().toUpperCase();
-    setIpoList([
-      ...ipoList,
-      {
-        id: newId,
-        company: companyName,
-        issueSize: newIpo.issueSize.trim() || '₹1000 Crores',
-        priceRange: newIpo.priceRange.trim() || '₹100-120',
-        minInvestment: newIpo.minInvestment.trim() || '₹15,000',
-        logoName: 'tata.png'
-      }
-    ]);
+    const created = await db.ipo.add({
+      company: companyName,
+      issueSize: newIpo.issueSize.trim() || '₹1000 Crores',
+      priceRange: newIpo.priceRange.trim() || '₹100-120',
+      minInvestment: newIpo.minInvestment.trim() || '₹15,000',
+      logoName: 'tata.png'
+    });
+    setIpoList(prev => [...prev.filter(i => i.id !== created.id), created]);
     showToast(`Added new IPO stock: ${companyName}`, 'success');
     setNewIpo({ company: '', issueSize: '', priceRange: '', minInvestment: '' });
     setOpenDialog(false);
   };
 
-  const handleDeleteIpo = (id: number) => {
+  const handleDeleteIpo = async (id: number) => {
     if (window.confirm('Are you sure you want to remove this IPO stock?')) {
       const targetCompany = ipoList.find(i => i.id === id)?.company || 'Stock';
-      setIpoList(ipoList.filter(item => item.id !== id));
+      await db.ipo.delete(id);
+      setIpoList(prev => prev.filter(item => item.id !== id));
       showToast(`Removed IPO stock: ${targetCompany}`, 'warning');
     }
   };
