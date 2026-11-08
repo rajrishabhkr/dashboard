@@ -268,7 +268,7 @@ const Home: React.FC = () => {
                   <div className="shortcut-icon game-icon"><i className="fas fa-gamepad"></i></div>
                   <div className="shortcut-text">
                     <span className="shortcut-label">Tic Tac Toe</span>
-                    <span className="shortcut-desc">Classic 2-Player Match</span>
+                    <span className="shortcut-desc">Smart AI &amp; 2-Player Match</span>
                   </div>
                 </Link>
                 <Link to="/3dcube" className="shortcut-card" onClick={() => showToast('Launching 3D Cube', 'info')}>

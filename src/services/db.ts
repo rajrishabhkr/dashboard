@@ -378,6 +378,55 @@ export const db = {
   },
 
   // ==========================================
+  // Game Scores Repository
+  // ==========================================
+  gameScores: {
+    async recordGame(game: string, score: number) {
+      try {
+        await localDb.gameScores.add({
+          game,
+          score,
+          date: new Date().toISOString(),
+        });
+        notifyDbChange();
+      } catch (err) {
+        console.warn('Failed to record game score:', err);
+      }
+    },
+    async getHistory(game: string, limit: number = 10) {
+      try {
+        return await localDb.gameScores
+          .where('game')
+          .equals(game)
+          .reverse()
+          .limit(limit)
+          .toArray();
+      } catch {
+        return [];
+      }
+    },
+    async getStats(game: string) {
+      try {
+        const records = await localDb.gameScores.where('game').equals(game).toArray();
+        const wins = records.filter(r => r.score === 1).length;
+        const losses = records.filter(r => r.score === -1).length;
+        const ties = records.filter(r => r.score === 0).length;
+        return { total: records.length, wins, losses, ties };
+      } catch {
+        return { total: 0, wins: 0, losses: 0, ties: 0 };
+      }
+    },
+    async clearHistory(game: string) {
+      try {
+        await localDb.gameScores.where('game').equals(game).delete();
+        notifyDbChange();
+      } catch (err) {
+        console.warn('Failed to clear game history:', err);
+      }
+    }
+  },
+
+  // ==========================================
   // Statistics & Sync Management
   // ==========================================
   async getStats() {

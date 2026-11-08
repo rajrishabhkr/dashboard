@@ -1,6 +1,6 @@
 import React from "react";
 import { IconButton, Divider, Tooltip } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   Dashboard,
   Feed,
@@ -69,6 +69,7 @@ const navItems = [
 ];
 
 const Sidebar: React.FC<SidebarProps> = ({ open, setOpen, onItemClick }) => {
+  const location = useLocation();
   return (
     <aside className={`sidebar ${open ? "open" : ""}`}>
       <div className="sidebar-header">
@@ -98,7 +99,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen, onItemClick }) => {
                   <Link 
                     to={item.path} 
                     onClick={onItemClick}
-                    className="nav-link"
+                    className={`nav-link ${location.pathname === item.path ? 'active' : ''}`}
                   >
                     <span className="nav-icon">{item.icon}</span>
                     <span className="nav-label">{item.label}</span>

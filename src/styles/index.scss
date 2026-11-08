@@ -31,3 +31,18 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
