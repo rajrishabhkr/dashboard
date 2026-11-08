@@ -74,6 +74,7 @@ DROP POLICY IF EXISTS "Public full access students" ON public.students;
 DROP POLICY IF EXISTS "Public full access teachers" ON public.teachers;
 DROP POLICY IF EXISTS "Public full access attendance" ON public.attendance;
 DROP POLICY IF EXISTS "Public full access ipo_list" ON public.ipo_list;
+DROP POLICY IF EXISTS "Public full access users" ON public.users;
 DROP POLICY IF EXISTS "Public read users" ON public.users;
 
 -- Create open policies for anon users
@@ -81,43 +82,15 @@ CREATE POLICY "Public full access students" ON public.students FOR ALL USING (tr
 CREATE POLICY "Public full access teachers" ON public.teachers FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Public full access attendance" ON public.attendance FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Public full access ipo_list" ON public.ipo_list FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Public read users" ON public.users FOR SELECT USING (true);
+CREATE POLICY "Public full access users" ON public.users FOR ALL USING (true) WITH CHECK (true);
 
--- ========================================================
--- INITIAL SEED DATA (OPTIONAL)
--- ========================================================
-
-INSERT INTO public.students (id, name, age, grade, gender, email) VALUES
-(1, 'Rahul Sharma', 20, 'A', 'Male', 'rahul@abc.com'),
-(2, 'Priya Verma', 21, 'B', 'Female', 'priya@abc.com'),
-(3, 'Ankit Singh', 22, 'C', 'Male', 'ankit@abc.com'),
-(4, 'Sonam Gupta', 19, 'A', 'Female', 'sonam@abc.com'),
-(5, 'Rajesh Yadav', 20, 'B', 'Male', 'rajesh@abc.com')
-ON CONFLICT (id) DO NOTHING;
-
-INSERT INTO public.teachers (id, name, age, subject, gender, email) VALUES
-(1, 'Dr. Ramesh Sharma', 45, 'Mathematics', 'Male', 'ramesh@abc.com'),
-(2, 'Ms. Pooja Singh', 38, 'English', 'Female', 'pooja@abc.com'),
-(3, 'Mr. Sandeep Kumar', 40, 'Physics', 'Male', 'sandeep@abc.com'),
-(4, 'Mrs. Anjali Verma', 42, 'Chemistry', 'Female', 'anjali@abc.com'),
-(5, 'Dr. Rajiv Mehta', 50, 'Biology', 'Male', 'rajiv@abc.com')
-ON CONFLICT (id) DO NOTHING;
-
-INSERT INTO public.attendance (id, name, role, gender, date, status) VALUES
-(1, 'Rahul Sharma', 'Student', 'Male', '2026-08-02', 'Present'),
-(2, 'Priya Verma', 'Student', 'Female', '2026-08-02', 'Absent'),
-(3, 'Ankit Singh', 'Student', 'Male', '2026-08-02', 'Late'),
-(4, 'Sonam Gupta', 'Student', 'Female', '2026-08-02', 'Absent'),
-(5, 'Rajesh Yadav', 'Student', 'Male', '2026-08-02', 'Present')
-ON CONFLICT (id) DO NOTHING;
-
-INSERT INTO public.ipo_list (id, company, issue_size, price_range, min_investment, logo_name) VALUES
-(1, 'GO AIR', '₹3600 Crores', '₹50-60', '₹50,000', 'goair.png'),
-(2, 'OYO', '₹3600 Crores', '₹50-60', '₹50,000', 'oyo.png'),
-(3, 'ZOMATO', '₹3600 Crores', '₹50-60', '₹50,000', 'zomato.png'),
-(4, 'BAJAJ ENERGY', '₹3600 Crores', '₹50-60', '₹50,000', 'bajaj.png')
-ON CONFLICT (id) DO NOTHING;
-
-INSERT INTO public.users (username, password_hash, role, name) VALUES
-('rishabh', 'cmlzaGlAMTIz', 'admin', 'Rishabh Kumar')
+-- Seed Default Admin User
+INSERT INTO public.users (username, password_hash, name, role)
+VALUES ('rishabh', 'cmlzaGlAMTIz', 'Rishabh Kumar', 'admin')
 ON CONFLICT (username) DO NOTHING;
+
+-- Synchronize sequence IDs so new auto-increment rows never conflict with seed IDs
+SELECT setval(pg_get_serial_sequence('public.students', 'id'), COALESCE(max(id), 1)) FROM public.students;
+SELECT setval(pg_get_serial_sequence('public.teachers', 'id'), COALESCE(max(id), 1)) FROM public.teachers;
+SELECT setval(pg_get_serial_sequence('public.attendance', 'id'), COALESCE(max(id), 1)) FROM public.attendance;
+SELECT setval(pg_get_serial_sequence('public.ipo_list', 'id'), COALESCE(max(id), 1)) FROM public.ipo_list;

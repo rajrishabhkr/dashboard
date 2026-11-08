@@ -31,6 +31,37 @@ export const subscribeDbChange = (fn: ChangeListener) => {
 };
 
 /**
+ * Calculates the next safe unique primary key ID across both Local IndexedDB and Supabase.
+ * Avoids any duplicate primary key collisions.
+ */
+async function getNextId(
+  tableName: 'students' | 'teachers' | 'attendance' | 'ipo_list',
+  localRecords: { id: number }[]
+): Promise<number> {
+  const maxLocal = localRecords.length > 0 ? Math.max(...localRecords.map(r => Number(r.id) || 0)) : 0;
+  let maxCloud = 0;
+
+  const client = getSupabaseClient();
+  if (client) {
+    try {
+      const { data } = await client
+        .from(tableName)
+        .select('id')
+        .order('id', { ascending: false })
+        .limit(1);
+
+      if (data && data.length > 0) {
+        maxCloud = Number(data[0].id) || 0;
+      }
+    } catch (err) {
+      console.warn(`Could not fetch max ID from cloud table ${tableName}:`, err);
+    }
+  }
+
+  return Math.max(maxLocal, maxCloud) + 1;
+}
+
+/**
  * Unified Database Service offering local IndexedDB (Dexie) + Cloud (Supabase PostgreSQL).
  */
 export const db = {
@@ -42,16 +73,28 @@ export const db = {
       const config = getSupabaseConfig();
       const client = getSupabaseClient();
 
-      if (config.mode === 'cloud' && client) {
+      // In hybrid or cloud mode, fetch latest records from Supabase
+      if ((config.mode === 'cloud' || config.mode === 'hybrid') && client) {
         try {
           const { data, error } = await client
             .from('students')
             .select('*')
             .order('id', { ascending: true });
+
           if (!error && data && data.length > 0) {
-            // Cache in localDb
-            await localDb.students.bulkPut(data);
-            return data as StudentRecord[];
+            const mapped: StudentRecord[] = data.map((item: any) => ({
+              id: Number(item.id),
+              name: item.name,
+              age: Number(item.age) || 18,
+              grade: item.grade || 'A',
+              gender: item.gender || 'Male',
+              email: item.email || '',
+              createdAt: item.created_at || new Date().toISOString(),
+            }));
+            await localDb.students.clear();
+            await localDb.students.bulkPut(mapped);
+            localStorage.setItem('dashboard_students_data', JSON.stringify(mapped));
+            return mapped;
           }
         } catch (err) {
           console.warn('Cloud fetch students failed, falling back to local DB:', err);
@@ -68,7 +111,7 @@ export const db = {
 
     async add(student: Omit<StudentRecord, 'id'> & { id?: number }): Promise<StudentRecord> {
       const all = await localDb.students.toArray();
-      const newId = student.id || (all.length ? Math.max(...all.map(s => s.id)) + 1 : 1);
+      const newId = student.id || await getNextId('students', all);
       const record: StudentRecord = {
         ...student,
         id: newId,
@@ -76,16 +119,26 @@ export const db = {
       };
 
       await localDb.students.put(record);
-      // Keep localStorage in sync for backward compatibility
       const updated = await localDb.students.toArray();
       localStorage.setItem('dashboard_students_data', JSON.stringify(updated));
 
-      // Sync to cloud if configured
+      // Sync cleanly to Supabase (only send schema columns)
       const client = getSupabaseClient();
       if (client) {
-        client.from('students').upsert(record).then(({ error }) => {
-          if (error) console.warn('Supabase student sync warning:', error);
-        });
+        const cloudPayload = {
+          id: record.id,
+          name: record.name,
+          age: record.age,
+          grade: record.grade,
+          gender: record.gender,
+          email: record.email,
+        };
+        try {
+          const { error } = await client.from('students').upsert(cloudPayload, { onConflict: 'id' });
+          if (error) console.error('Supabase student sync error:', error.message, error);
+        } catch (e) {
+          console.error('Supabase student sync exception:', e);
+        }
       }
 
       notifyDbChange();
@@ -103,7 +156,9 @@ export const db = {
 
       const client = getSupabaseClient();
       if (client) {
-        client.from('students').update(changes).eq('id', id).then(({ error }) => {
+        const cloudChanges: any = { ...changes };
+        delete cloudChanges.createdAt; // strip camelCase
+        client.from('students').update(cloudChanges).eq('id', id).then(({ error }) => {
           if (error) console.warn('Supabase student update warning:', error);
         });
       }
@@ -135,15 +190,27 @@ export const db = {
       const config = getSupabaseConfig();
       const client = getSupabaseClient();
 
-      if (config.mode === 'cloud' && client) {
+      if ((config.mode === 'cloud' || config.mode === 'hybrid') && client) {
         try {
           const { data, error } = await client
             .from('teachers')
             .select('*')
             .order('id', { ascending: true });
+
           if (!error && data && data.length > 0) {
-            await localDb.teachers.bulkPut(data);
-            return data as TeacherRecord[];
+            const mapped: TeacherRecord[] = data.map((item: any) => ({
+              id: Number(item.id),
+              name: item.name,
+              age: Number(item.age) || 35,
+              subject: item.subject || 'General',
+              gender: item.gender || 'Female',
+              email: item.email || '',
+              createdAt: item.created_at || new Date().toISOString(),
+            }));
+            await localDb.teachers.clear();
+            await localDb.teachers.bulkPut(mapped);
+            localStorage.setItem('dashboard_teachers_data', JSON.stringify(mapped));
+            return mapped;
           }
         } catch (err) {
           console.warn('Cloud fetch teachers failed, falling back to local DB:', err);
@@ -160,7 +227,7 @@ export const db = {
 
     async add(teacher: Omit<TeacherRecord, 'id'> & { id?: number }): Promise<TeacherRecord> {
       const all = await localDb.teachers.toArray();
-      const newId = teacher.id || (all.length ? Math.max(...all.map(t => t.id)) + 1 : 1);
+      const newId = teacher.id || await getNextId('teachers', all);
       const record: TeacherRecord = {
         ...teacher,
         id: newId,
@@ -173,9 +240,20 @@ export const db = {
 
       const client = getSupabaseClient();
       if (client) {
-        client.from('teachers').upsert(record).then(({ error }) => {
-          if (error) console.warn('Supabase teacher sync warning:', error);
-        });
+        const cloudPayload = {
+          id: record.id,
+          name: record.name,
+          age: record.age,
+          subject: record.subject,
+          gender: record.gender,
+          email: record.email,
+        };
+        try {
+          const { error } = await client.from('teachers').upsert(cloudPayload, { onConflict: 'id' });
+          if (error) console.error('Supabase teacher sync error:', error.message, error);
+        } catch (e) {
+          console.error('Supabase teacher sync exception:', e);
+        }
       }
 
       notifyDbChange();
@@ -193,7 +271,9 @@ export const db = {
 
       const client = getSupabaseClient();
       if (client) {
-        client.from('teachers').update(changes).eq('id', id).then(({ error }) => {
+        const cloudChanges: any = { ...changes };
+        delete cloudChanges.createdAt;
+        client.from('teachers').update(cloudChanges).eq('id', id).then(({ error }) => {
           if (error) console.warn('Supabase teacher update warning:', error);
         });
       }
@@ -225,15 +305,26 @@ export const db = {
       const config = getSupabaseConfig();
       const client = getSupabaseClient();
 
-      if (config.mode === 'cloud' && client) {
+      if ((config.mode === 'cloud' || config.mode === 'hybrid') && client) {
         try {
           const { data, error } = await client
             .from('attendance')
             .select('*')
             .order('id', { ascending: true });
+
           if (!error && data && data.length > 0) {
-            await localDb.attendance.bulkPut(data);
-            return data as AttendanceRecord[];
+            const mapped: AttendanceRecord[] = data.map((item: any) => ({
+              id: Number(item.id),
+              name: item.name,
+              role: item.role || 'Student',
+              gender: item.gender || 'Male',
+              date: item.date,
+              status: item.status || 'Present',
+            }));
+            await localDb.attendance.clear();
+            await localDb.attendance.bulkPut(mapped);
+            localStorage.setItem('dashboard_attendance_data', JSON.stringify(mapped));
+            return mapped;
           }
         } catch (err) {
           console.warn('Cloud fetch attendance failed, falling back to local DB:', err);
@@ -251,7 +342,7 @@ export const db = {
     async updateStatus(id: number, newStatus: string): Promise<void> {
       const existing = await localDb.attendance.get(id);
       if (existing) {
-        const updated = { ...existing, status: newStatus, updatedAt: new Date().toISOString() };
+        const updated = { ...existing, status: newStatus };
         await localDb.attendance.put(updated);
       }
 
@@ -270,7 +361,7 @@ export const db = {
 
     async add(record: Omit<AttendanceRecord, 'id'> & { id?: number }): Promise<AttendanceRecord> {
       const all = await localDb.attendance.toArray();
-      const newId = record.id || (all.length ? Math.max(...all.map(a => a.id)) + 1 : 1);
+      const newId = record.id || await getNextId('attendance', all);
       const newRecord: AttendanceRecord = { ...record, id: newId };
 
       await localDb.attendance.put(newRecord);
@@ -279,9 +370,20 @@ export const db = {
 
       const client = getSupabaseClient();
       if (client) {
-        client.from('attendance').upsert(newRecord).then(({ error }) => {
-          if (error) console.warn('Supabase attendance add warning:', error);
-        });
+        const cloudPayload = {
+          id: newRecord.id,
+          name: newRecord.name,
+          role: newRecord.role,
+          gender: newRecord.gender,
+          date: newRecord.date,
+          status: newRecord.status,
+        };
+        try {
+          const { error } = await client.from('attendance').upsert(cloudPayload, { onConflict: 'id' });
+          if (error) console.error('Supabase attendance add error:', error.message, error);
+        } catch (e) {
+          console.error('Supabase attendance add exception:', e);
+        }
       }
 
       notifyDbChange();
@@ -312,16 +414,16 @@ export const db = {
       const config = getSupabaseConfig();
       const client = getSupabaseClient();
 
-      if (config.mode === 'cloud' && client) {
+      if ((config.mode === 'cloud' || config.mode === 'hybrid') && client) {
         try {
           const { data, error } = await client
             .from('ipo_list')
             .select('*')
             .order('id', { ascending: true });
+
           if (!error && data && data.length > 0) {
-            // Map logo_name or logoName
             const mapped: IPORecord[] = data.map((item: any) => ({
-              id: item.id,
+              id: Number(item.id),
               company: item.company,
               issueSize: item.issue_size || item.issueSize,
               priceRange: item.price_range || item.priceRange,
@@ -329,7 +431,9 @@ export const db = {
               logoName: item.logo_name || item.logoName,
               createdAt: item.created_at,
             }));
+            await localDb.ipo.clear();
             await localDb.ipo.bulkPut(mapped);
+            localStorage.setItem('dashboard_ipo_data', JSON.stringify(mapped));
             return mapped;
           }
         } catch (err) {
@@ -347,7 +451,7 @@ export const db = {
 
     async add(ipoItem: Omit<IPORecord, 'id'> & { id?: number }): Promise<IPORecord> {
       const all = await localDb.ipo.toArray();
-      const newId = ipoItem.id || (all.length ? Math.max(...all.map(i => i.id)) + 1 : 1);
+      const newId = ipoItem.id || await getNextId('ipo_list', all);
       const record: IPORecord = {
         ...ipoItem,
         id: newId,
@@ -360,16 +464,20 @@ export const db = {
 
       const client = getSupabaseClient();
       if (client) {
-        client.from('ipo_list').upsert({
+        const cloudPayload = {
           id: record.id,
           company: record.company,
           issue_size: record.issueSize,
           price_range: record.priceRange,
           min_investment: record.minInvestment,
-          logo_name: record.logoName,
-        }).then(({ error }) => {
-          if (error) console.warn('Supabase IPO add warning:', error);
-        });
+          logo_name: record.logoName || null,
+        };
+        try {
+          const { error } = await client.from('ipo_list').upsert(cloudPayload, { onConflict: 'id' });
+          if (error) console.error('Supabase IPO add error:', error.message, error);
+        } catch (e) {
+          console.error('Supabase IPO add exception:', e);
+        }
       }
 
       notifyDbChange();
@@ -530,7 +638,7 @@ export const db = {
   },
 
   /**
-   * Push all local data into Supabase Cloud
+   * Push all local data into Supabase Cloud with clean schema mapping
    */
   async syncLocalToCloud(): Promise<{ success: boolean; message: string; details?: any }> {
     const client = getSupabaseClient();
@@ -544,28 +652,52 @@ export const db = {
       const attendance = await localDb.attendance.toArray();
       const ipo = await localDb.ipo.toArray();
 
-      let syncedCounts = { students: 0, teachers: 0, attendance: 0, ipo: 0 };
+      const syncedCounts = { students: 0, teachers: 0, attendance: 0, ipo: 0 };
 
       if (students.length > 0) {
-        const { error } = await client.from('students').upsert(students);
+        const mapped = students.map(s => ({
+          id: s.id,
+          name: s.name,
+          age: s.age,
+          grade: s.grade,
+          gender: s.gender,
+          email: s.email,
+        }));
+        const { error } = await client.from('students').upsert(mapped, { onConflict: 'id' });
         if (error) throw new Error(`Students table sync failed: ${error.message}`);
         syncedCounts.students = students.length;
       }
 
       if (teachers.length > 0) {
-        const { error } = await client.from('teachers').upsert(teachers);
+        const mapped = teachers.map(t => ({
+          id: t.id,
+          name: t.name,
+          age: t.age,
+          subject: t.subject,
+          gender: t.gender,
+          email: t.email,
+        }));
+        const { error } = await client.from('teachers').upsert(mapped, { onConflict: 'id' });
         if (error) throw new Error(`Teachers table sync failed: ${error.message}`);
         syncedCounts.teachers = teachers.length;
       }
 
       if (attendance.length > 0) {
-        const { error } = await client.from('attendance').upsert(attendance);
+        const mapped = attendance.map(a => ({
+          id: a.id,
+          name: a.name,
+          role: a.role,
+          gender: a.gender,
+          date: a.date,
+          status: a.status,
+        }));
+        const { error } = await client.from('attendance').upsert(mapped, { onConflict: 'id' });
         if (error) throw new Error(`Attendance table sync failed: ${error.message}`);
         syncedCounts.attendance = attendance.length;
       }
 
       if (ipo.length > 0) {
-        const ipoMapped = ipo.map(item => ({
+        const mapped = ipo.map(item => ({
           id: item.id,
           company: item.company,
           issue_size: item.issueSize,
@@ -573,14 +705,14 @@ export const db = {
           min_investment: item.minInvestment,
           logo_name: item.logoName || null,
         }));
-        const { error } = await client.from('ipo_list').upsert(ipoMapped);
+        const { error } = await client.from('ipo_list').upsert(mapped, { onConflict: 'id' });
         if (error) throw new Error(`IPO table sync failed: ${error.message}`);
         syncedCounts.ipo = ipo.length;
       }
 
       return {
         success: true,
-        message: `Successfully uploaded ${syncedCounts.students} students, ${syncedCounts.teachers} teachers, ${syncedCounts.attendance} attendance records, and ${syncedCounts.ipo} IPOs to free Supabase PostgreSQL cloud!`,
+        message: `Successfully uploaded ${syncedCounts.students} students, ${syncedCounts.teachers} teachers, ${syncedCounts.attendance} attendance records, and ${syncedCounts.ipo} IPOs to Supabase PostgreSQL!`,
         details: syncedCounts,
       };
     } catch (err: any) {
@@ -599,10 +731,10 @@ export const db = {
 
     try {
       const [sRes, tRes, aRes, iRes] = await Promise.all([
-        client.from('students').select('*'),
-        client.from('teachers').select('*'),
-        client.from('attendance').select('*'),
-        client.from('ipo_list').select('*'),
+        client.from('students').select('*').order('id', { ascending: true }),
+        client.from('teachers').select('*').order('id', { ascending: true }),
+        client.from('attendance').select('*').order('id', { ascending: true }),
+        client.from('ipo_list').select('*').order('id', { ascending: true }),
       ]);
 
       if (sRes.error) throw sRes.error;
@@ -611,26 +743,52 @@ export const db = {
       if (iRes.error) throw iRes.error;
 
       if (sRes.data && sRes.data.length > 0) {
+        const mapped: StudentRecord[] = sRes.data.map((item: any) => ({
+          id: Number(item.id),
+          name: item.name,
+          age: Number(item.age) || 18,
+          grade: item.grade || 'A',
+          gender: item.gender || 'Male',
+          email: item.email || '',
+          createdAt: item.created_at || new Date().toISOString(),
+        }));
         await localDb.students.clear();
-        await localDb.students.bulkPut(sRes.data);
-        localStorage.setItem('dashboard_students_data', JSON.stringify(sRes.data));
+        await localDb.students.bulkPut(mapped);
+        localStorage.setItem('dashboard_students_data', JSON.stringify(mapped));
       }
 
       if (tRes.data && tRes.data.length > 0) {
+        const mapped: TeacherRecord[] = tRes.data.map((item: any) => ({
+          id: Number(item.id),
+          name: item.name,
+          age: Number(item.age) || 35,
+          subject: item.subject || 'General',
+          gender: item.gender || 'Female',
+          email: item.email || '',
+          createdAt: item.created_at || new Date().toISOString(),
+        }));
         await localDb.teachers.clear();
-        await localDb.teachers.bulkPut(tRes.data);
-        localStorage.setItem('dashboard_teachers_data', JSON.stringify(tRes.data));
+        await localDb.teachers.bulkPut(mapped);
+        localStorage.setItem('dashboard_teachers_data', JSON.stringify(mapped));
       }
 
       if (aRes.data && aRes.data.length > 0) {
+        const mapped: AttendanceRecord[] = aRes.data.map((item: any) => ({
+          id: Number(item.id),
+          name: item.name,
+          role: item.role || 'Student',
+          gender: item.gender || 'Male',
+          date: item.date,
+          status: item.status || 'Present',
+        }));
         await localDb.attendance.clear();
-        await localDb.attendance.bulkPut(aRes.data);
-        localStorage.setItem('dashboard_attendance_data', JSON.stringify(aRes.data));
+        await localDb.attendance.bulkPut(mapped);
+        localStorage.setItem('dashboard_attendance_data', JSON.stringify(mapped));
       }
 
       if (iRes.data && iRes.data.length > 0) {
         const mapped: IPORecord[] = iRes.data.map((item: any) => ({
-          id: item.id,
+          id: Number(item.id),
           company: item.company,
           issueSize: item.issue_size || item.issueSize,
           priceRange: item.price_range || item.priceRange,
@@ -644,9 +802,10 @@ export const db = {
       }
 
       notifyDbChange();
+
       return {
         success: true,
-        message: 'Successfully pulled latest records from Supabase into Local DB!',
+        message: `Successfully synchronized ${sRes.data?.length || 0} students, ${tRes.data?.length || 0} teachers, ${aRes.data?.length || 0} attendance records, and ${iRes.data?.length || 0} IPOs from Supabase Cloud to local device!`,
         details: {
           students: sRes.data?.length || 0,
           teachers: tRes.data?.length || 0,
@@ -655,88 +814,76 @@ export const db = {
         },
       };
     } catch (err: any) {
-      return { success: false, message: err.message || 'Pull from cloud failed' };
+      return { success: false, message: err.message || 'Sync from cloud failed' };
     }
   },
 
-  /**
-   * Export all database records to JSON string
-   */
   async exportBackup(): Promise<string> {
     const students = await localDb.students.toArray();
     const teachers = await localDb.teachers.toArray();
     const attendance = await localDb.attendance.toArray();
     const ipo = await localDb.ipo.toArray();
+    const gameScores = await localDb.gameScores.toArray();
 
-    const dump = {
-      app: 'Rishabh Tech Dashboard',
-      version: '1.0',
-      exportedAt: new Date().toISOString(),
-      tables: {
+    const backup = {
+      version: 2,
+      exportDate: new Date().toISOString(),
+      data: {
         students,
         teachers,
         attendance,
         ipo,
+        gameScores,
       },
     };
-    return JSON.stringify(dump, null, 2);
+    return JSON.stringify(backup, null, 2);
   },
 
-  /**
-   * Import all database records from JSON string
-   */
   async importBackup(jsonString: string): Promise<{ success: boolean; message: string }> {
     try {
-      const parsed = JSON.parse(jsonString);
-      const tables = parsed.tables || parsed;
+      const backup = JSON.parse(jsonString);
+      if (!backup.data) throw new Error('Invalid backup file structure.');
 
-      if (tables.students && Array.isArray(tables.students)) {
+      if (backup.data.students?.length) {
         await localDb.students.clear();
-        await localDb.students.bulkPut(tables.students);
-        localStorage.setItem('dashboard_students_data', JSON.stringify(tables.students));
+        await localDb.students.bulkPut(backup.data.students);
+        localStorage.setItem('dashboard_students_data', JSON.stringify(backup.data.students));
       }
-      if (tables.teachers && Array.isArray(tables.teachers)) {
+      if (backup.data.teachers?.length) {
         await localDb.teachers.clear();
-        await localDb.teachers.bulkPut(tables.teachers);
-        localStorage.setItem('dashboard_teachers_data', JSON.stringify(tables.teachers));
+        await localDb.teachers.bulkPut(backup.data.teachers);
+        localStorage.setItem('dashboard_teachers_data', JSON.stringify(backup.data.teachers));
       }
-      if (tables.attendance && Array.isArray(tables.attendance)) {
+      if (backup.data.attendance?.length) {
         await localDb.attendance.clear();
-        await localDb.attendance.bulkPut(tables.attendance);
-        localStorage.setItem('dashboard_attendance_data', JSON.stringify(tables.attendance));
+        await localDb.attendance.bulkPut(backup.data.attendance);
+        localStorage.setItem('dashboard_attendance_data', JSON.stringify(backup.data.attendance));
       }
-      if (tables.ipo && Array.isArray(tables.ipo)) {
+      if (backup.data.ipo?.length) {
         await localDb.ipo.clear();
-        await localDb.ipo.bulkPut(tables.ipo);
-        localStorage.setItem('dashboard_ipo_data', JSON.stringify(tables.ipo));
+        await localDb.ipo.bulkPut(backup.data.ipo);
+        localStorage.setItem('dashboard_ipo_data', JSON.stringify(backup.data.ipo));
       }
 
       notifyDbChange();
-      return { success: true, message: 'Database backup successfully restored!' };
-    } catch (err: any) {
-      return { success: false, message: `Import error: ${err.message}` };
+      return { success: true, message: 'Backup successfully imported into local database!' };
+    } catch (e: any) {
+      return { success: false, message: 'Import failed: ' + e.message };
     }
   },
 
-  /**
-   * Reset local database to factory seed data
-   */
   async resetToDefaults(): Promise<void> {
     await localDb.students.clear();
-    await localDb.students.bulkPut(defaultStudents);
-    localStorage.setItem('dashboard_students_data', JSON.stringify(defaultStudents));
-
     await localDb.teachers.clear();
-    await localDb.teachers.bulkPut(defaultTeachers);
-    localStorage.setItem('dashboard_teachers_data', JSON.stringify(defaultTeachers));
-
     await localDb.attendance.clear();
-    await localDb.attendance.bulkPut(defaultAttendance);
-    localStorage.setItem('dashboard_attendance_data', JSON.stringify(defaultAttendance));
-
     await localDb.ipo.clear();
-    await localDb.ipo.bulkPut(defaultIpo);
-    localStorage.setItem('dashboard_ipo_data', JSON.stringify(defaultIpo));
+    await localDb.gameScores.clear();
+    await localDb.initializeWithDefaults();
+
+    localStorage.removeItem('dashboard_students_data');
+    localStorage.removeItem('dashboard_teachers_data');
+    localStorage.removeItem('dashboard_attendance_data');
+    localStorage.removeItem('dashboard_ipo_data');
 
     notifyDbChange();
   },

@@ -101,7 +101,13 @@ CREATE POLICY "Public full access students" ON public.students FOR ALL USING (tr
 CREATE POLICY "Public full access teachers" ON public.teachers FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Public full access attendance" ON public.attendance FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Public full access ipo_list" ON public.ipo_list FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Public full access users" ON public.users FOR ALL USING (true) WITH CHECK (true);`;
+CREATE POLICY "Public full access users" ON public.users FOR ALL USING (true) WITH CHECK (true);
+
+-- Synchronize sequence IDs so new auto-increment rows never conflict with seed IDs
+SELECT setval(pg_get_serial_sequence('public.students', 'id'), COALESCE(max(id), 1)) FROM public.students;
+SELECT setval(pg_get_serial_sequence('public.teachers', 'id'), COALESCE(max(id), 1)) FROM public.teachers;
+SELECT setval(pg_get_serial_sequence('public.attendance', 'id'), COALESCE(max(id), 1)) FROM public.attendance;
+SELECT setval(pg_get_serial_sequence('public.ipo_list', 'id'), COALESCE(max(id), 1)) FROM public.ipo_list;`;
 
 type TableTab = 'students' | 'teachers' | 'attendance' | 'ipo' | 'users';
 
