@@ -18,6 +18,20 @@ export default {
           700: '#0058b8',
         },
       },
+      keyframes: {
+        scaleIn: {
+          '0%': { transform: 'scale(0.3)', opacity: '0' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        pulseGlow: {
+          '0%, 100%': { opacity: '1', transform: 'scale(1)' },
+          '50%': { opacity: '0.8', transform: 'scale(1.03)' },
+        },
+      },
+      animation: {
+        scaleIn: 'scaleIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+        pulseGlow: 'pulseGlow 2s ease-in-out infinite',
+      },
     },
   },
   plugins: [],

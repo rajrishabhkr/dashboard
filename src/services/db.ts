@@ -498,6 +498,11 @@ export const db = {
     async getProfile(username: string) {
       await localDb.initializeWithDefaults();
       return await localDb.users.where('username').equalsIgnoreCase(username.trim()).first();
+    },
+
+    async getAll(): Promise<any[]> {
+      await localDb.initializeWithDefaults();
+      return await localDb.users.toArray();
     }
   },
 
