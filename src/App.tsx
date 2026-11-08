@@ -12,11 +12,14 @@ import RubiksCube from './pages/games/RubiksCube';
 import MemoryMatch from './pages/games/MemoryMatch';
 import ColorRush from './pages/games/ColorRush';
 import SnakeGame from './pages/games/SnakeGame';
+import Game2048 from './pages/games/Game2048';
+import BrickBreaker from './pages/games/BrickBreaker';
 import IPOList from './pages/stocks/IPOList';
 import IPODetail from './pages/stocks/IPODetail';
 import Calculator from './pages/stocks/Calculator';
 import CounterPage from './pages/stocks/CounterPage';
 import StopwatchPage from './pages/stocks/StopwatchPage';
+import PasswordGenerator from './pages/tools/PasswordGenerator';
 import DatabasePage from './pages/database/DatabasePage';
 
 const App = () => {
@@ -35,11 +38,14 @@ const App = () => {
           <Route path="snake" element={<SnakeGame />} />
           <Route path="memory-match" element={<MemoryMatch />} />
           <Route path="color-rush" element={<ColorRush />} />
+          <Route path="2048" element={<Game2048 />} />
+          <Route path="brick-breaker" element={<BrickBreaker />} />
           <Route path="ipolist" element={<IPOList />} />
           <Route path="ipolist/details/:id" element={<IPODetail />} />
           <Route path="calculator" element={<Calculator />} />
           <Route path="counter" element={<CounterPage />} />
           <Route path="stopwatch" element={<StopwatchPage />} />
+          <Route path="password-generator" element={<PasswordGenerator />} />
           <Route path="database" element={<DatabasePage />} />
         </Route>
       </Routes>

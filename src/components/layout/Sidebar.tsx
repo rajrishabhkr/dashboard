@@ -20,6 +20,9 @@ import {
   ChevronRight,
   GridOn,
   Storage,
+  VpnKey,
+  Numbers,
+  SportsBaseball,
 } from "@mui/icons-material";
 import "./Components.scss";
 
@@ -40,21 +43,23 @@ const navItems = [
   {
     section: "Tools",
     items: [
-
       { icon: <Calculate />, label: "Calculator", path: "/calculator" },
       { icon: <PlusOne />, label: "Digital Counter", path: "/counter" },
-      { icon: <Timer />, label: "Precision Stopwatch", path: "/stopwatch" }
+      { icon: <Timer />, label: "Precision Stopwatch", path: "/stopwatch" },
+      { icon: <VpnKey />, label: "Password Vault", path: "/password-generator" }
     ]
   },
   {
     section: "Games",
     items: [
       { icon: <SportsEsports />, label: "Tic Tac Toe", path: "/tictactoe" },
-      { icon: <ViewInAr />, label: "3D Cube", path: "/3dcube" },
-      { icon: <GridOn />, label: "Rubik's Cube", path: "/rubiks-cube" },
       { icon: <VideogameAsset />, label: "Snake Game", path: "/snake" },
       { icon: <Extension />, label: "Memory Match", path: "/memory-match" },
-      { icon: <Style />, label: "Color Rush", path: "/color-rush" }
+      { icon: <Style />, label: "Color Rush", path: "/color-rush" },
+      { icon: <Numbers />, label: "Neon 2048", path: "/2048" },
+      { icon: <SportsBaseball />, label: "Brick Breaker", path: "/brick-breaker" },
+      { icon: <ViewInAr />, label: "3D Cube", path: "/3dcube" },
+      { icon: <GridOn />, label: "Rubik's Cube", path: "/rubiks-cube" }
     ]
   },
   {

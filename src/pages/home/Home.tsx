@@ -152,7 +152,7 @@ const Home: React.FC = () => {
 
         <div className="hero-text-wrap">
           <span className="hero-badge">
-            <i className="fas fa-sparkles"></i> Antigravity 2.0 Web Platform
+            <i className="fas fa-bolt"></i> High-Performance Web Ecosystem
           </span>
           <h1>Welcome to Rishabh Tech</h1>
           <p>
@@ -317,6 +317,13 @@ const Home: React.FC = () => {
                   <span className="shortcut-desc">Millisecond Splits &amp; Laps</span>
                 </div>
               </Link>
+              <Link to="/password-generator" className="shortcut-card" onClick={() => showToast('Opening Password Vault', 'info')}>
+                <div className="shortcut-icon pass-icon"><i className="fas fa-key"></i></div>
+                <div className="shortcut-text">
+                  <span className="shortcut-label">Password Vault</span>
+                  <span className="shortcut-desc">Entropy &amp; PIN Generator</span>
+                </div>
+              </Link>
             </div>
           </div>
 
@@ -350,6 +357,20 @@ const Home: React.FC = () => {
                 <div className="shortcut-text">
                   <span className="shortcut-label">Color Rush</span>
                   <span className="shortcut-desc">Pattern Streak Memory</span>
+                </div>
+              </Link>
+              <Link to="/2048" className="shortcut-card" onClick={() => showToast('Launching Neon 2048', 'info')}>
+                <div className="shortcut-icon num-icon"><i className="fas fa-cubes-stacked"></i></div>
+                <div className="shortcut-text">
+                  <span className="shortcut-label">Neon 2048</span>
+                  <span className="shortcut-desc">Sliding Tile Math Puzzle</span>
+                </div>
+              </Link>
+              <Link to="/brick-breaker" className="shortcut-card" onClick={() => showToast('Launching Brick Breaker', 'info')}>
+                <div className="shortcut-icon break-icon"><i className="fas fa-burst"></i></div>
+                <div className="shortcut-text">
+                  <span className="shortcut-label">Brick Breaker</span>
+                  <span className="shortcut-desc">Arcade Paddle &amp; Lasers</span>
                 </div>
               </Link>
               <Link to="/3dcube" className="shortcut-card" onClick={() => showToast('Launching 3D Cube', 'info')}>
@@ -498,14 +519,26 @@ const Home: React.FC = () => {
             <div className="stack-chips-wrap">
               <span className="stack-chip"><i className="fab fa-react"></i> React 18</span>
               <span className="stack-chip"><i className="fab fa-js-square"></i> TypeScript</span>
+              <span className="stack-chip"><i className="fab fa-js"></i> JavaScript ES6+</span>
+              <span className="stack-chip"><i className="fas fa-layer-group"></i> Next.js</span>
+              <span className="stack-chip"><i className="fas fa-atom"></i> Redux Toolkit</span>
               <span className="stack-chip"><i className="fas fa-wind"></i> Tailwind CSS</span>
               <span className="stack-chip"><i className="fab fa-sass"></i> SCSS / SASS</span>
-              <span className="stack-chip"><i className="fas fa-bolt"></i> Vite</span>
-              <span className="stack-chip"><i className="fas fa-cloud"></i> Supabase</span>
-              <span className="stack-chip"><i className="fas fa-database"></i> Dexie IndexedDB</span>
+              <span className="stack-chip"><i className="fas fa-shapes"></i> Material UI (MUI)</span>
+              <span className="stack-chip"><i className="fas fa-bolt"></i> Vite 6</span>
+              <span className="stack-chip"><i className="fas fa-cloud"></i> Supabase Cloud</span>
+              <span className="stack-chip"><i className="fas fa-database"></i> PostgreSQL</span>
+              <span className="stack-chip"><i className="fas fa-server"></i> Dexie IndexedDB</span>
               <span className="stack-chip"><i className="fas fa-cube"></i> Three.js / WebGL</span>
+              <span className="stack-chip"><i className="fas fa-paint-brush"></i> HTML5 Canvas</span>
               <span className="stack-chip"><i className="fab fa-node-js"></i> Node.js</span>
+              <span className="stack-chip"><i className="fas fa-network-wired"></i> Express.js</span>
+              <span className="stack-chip"><i className="fas fa-code-merge"></i> REST APIs &amp; GraphQL</span>
               <span className="stack-chip"><i className="fab fa-git-alt"></i> Git &amp; GitHub</span>
+              <span className="stack-chip"><i className="fab fa-docker"></i> Docker</span>
+              <span className="stack-chip"><i className="fas fa-vial-circle-check"></i> Vitest / Jest</span>
+              <span className="stack-chip"><i className="fas fa-diagram-project"></i> CI/CD Workflows</span>
+              <span className="stack-chip"><i className="fab fa-linux"></i> Linux</span>
             </div>
           </div>
 
