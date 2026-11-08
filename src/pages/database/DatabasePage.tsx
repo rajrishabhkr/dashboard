@@ -414,20 +414,8 @@ const DatabasePage: React.FC = () => {
             </div>
             <h2 className="text-2xl font-black text-white tracking-tight">Database Hub</h2>
             <p className="text-xs text-slate-400 mt-1 max-w-xs mx-auto">
-              Secure Administrative Control Center. Credentials verified against local &amp; cloud database users table.
+              Secure Administrative Control Center. Credentials verified against database users profile.
             </p>
-          </div>
-
-          {/* Demo Credentials Pill */}
-          <div className="mb-5 p-3 rounded-2xl bg-cyan-950/40 border border-cyan-500/30 text-xs text-cyan-300 relative z-10 flex flex-col gap-1 shadow-inner">
-            <div className="flex items-center gap-1.5 font-bold text-cyan-200">
-              <Shield fontSize="small" />
-              <span>Default Database Admin Credentials:</span>
-            </div>
-            <div className="flex items-center justify-between text-[11px] text-slate-300 pt-1 border-t border-cyan-500/20">
-              <span>Username: <strong className="text-white font-mono">rishabh</strong></span>
-              <span>Password: <strong className="text-white font-mono">rishi@123</strong></span>
-            </div>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4 relative z-10">

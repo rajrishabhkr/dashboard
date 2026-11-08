@@ -20,27 +20,26 @@ const TooltipWrapper: React.FC<{ title: string; children: React.ReactNode }> = (
 const Home: React.FC = () => {
   const { showToast } = useToast();
   const gifs = [
-    { id: 1, src: gif1, title: 'Chicken' },
-    { id: 2, src: gif2, title: 'Panda' },
-    { id: 3, src: gif3, title: 'Poo' },
-    { id: 4, src: gif4, title: 'Unicorn' },
+    { id: 1, src: gif1, title: 'Animated Chicken' },
+    { id: 2, src: gif2, title: 'Playful Panda' },
+    { id: 3, src: gif3, title: 'Witty Poo' },
+    { id: 4, src: gif4, title: 'Magic Unicorn' },
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAutoPlaying] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(true);
   const [selectedLogo, setSelectedLogo] = useState<{ src: string; title: string } | null>(null);
-  const [socialDropdownOpen, setSocialDropdownOpen] = useState(false);
 
   // Auto-advance carousel
   useEffect(() => {
-    if (!isAutoPlaying) return;
-    
+    if (!isPlaying) return;
+
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % gifs.length);
-    }, 2000); // Change GIF every 2 seconds
+    }, 2800);
 
     return () => clearInterval(interval);
-  }, [isAutoPlaying, gifs.length]);
+  }, [isPlaying, gifs.length]);
 
   const goToPrevious = () => {
     setCurrentIndex((prevIndex) => (prevIndex - 1 + gifs.length) % gifs.length);
@@ -54,15 +53,25 @@ const Home: React.FC = () => {
     setCurrentIndex(index);
   };
 
+  const toggleCarouselPlay = () => {
+    const nextState = !isPlaying;
+    setIsPlaying(nextState);
+    showToast(nextState ? 'Carousel autoplay resumed' : 'Carousel paused', 'info');
+  };
+
   const openLogoModal = (src: string, title: string) => {
     setSelectedLogo({ src, title });
-    showToast(`Enlarged ${title} Logo`, 'info');
+    showToast(`Viewing ${title}`, 'info');
+  };
+
+  const handleCopyEmail = () => {
+    navigator.clipboard.writeText('rajrishabhkr@gmail.com');
+    showToast('Email address copied to clipboard! 📋', 'success');
   };
 
   const handleDownloadApk = async () => {
-    setSocialDropdownOpen(false);
     try {
-      showToast("Starting Rishabh Tech APK download... 🚀", "info");
+      showToast('Starting Rishabh Tech APK download... 🚀', 'info');
       const baseUrl = import.meta.env.BASE_URL.endsWith('/')
         ? import.meta.env.BASE_URL
         : `${import.meta.env.BASE_URL}/`;
@@ -74,59 +83,59 @@ const Home: React.FC = () => {
       const apkBlob = new Blob([blob], { type: 'application/vnd.android.package-archive' });
       const blobUrl = window.URL.createObjectURL(apkBlob);
 
-      const link = document.createElement("a");
+      const link = document.createElement('a');
       link.href = blobUrl;
-      link.download = "rishabh-tech.apk";
+      link.download = 'rishabh-tech.apk';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(blobUrl);
 
-      showToast("Rishabh Tech APK downloaded! 📱", "success");
+      showToast('Rishabh Tech APK downloaded! 📱', 'success');
     } catch (err) {
-      console.error("APK download error:", err);
+      console.error('APK download error:', err);
       const baseUrl = import.meta.env.BASE_URL.endsWith('/')
         ? import.meta.env.BASE_URL
         : `${import.meta.env.BASE_URL}/`;
-      const link = document.createElement("a");
+      const link = document.createElement('a');
       link.href = `${baseUrl}rishabh-tech.apk`;
-      link.download = "rishabh-tech.apk";
+      link.download = 'rishabh-tech.apk';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      showToast("Downloading APK... 🚀", "success");
+      showToast('Downloading APK... 🚀', 'success');
     }
   };
 
   return (
     <div className="home-container">
-      {/* Welcome Section */}
-      <div className="welcome-section">
+      {/* Welcome Hero Section */}
+      <section className="welcome-section">
         <div className="logos-row">
-          <TooltipWrapper title="Click to enlarge Vite Logo">
+          <TooltipWrapper title="Vite Next-Gen Bundler">
             <img
               src={viteLogo}
               className="logo vite-logo clickable-logo"
               alt="Vite logo"
-              onClick={() => openLogoModal(viteLogo, 'Vite Build Tool')}
+              onClick={() => openLogoModal(viteLogo, 'Vite Build Engine')}
             />
           </TooltipWrapper>
 
-          <TooltipWrapper title="Click to enlarge Rishabh Tech Logo">
+          <TooltipWrapper title="Rishabh Tech Brand Centerpiece">
             <img
               src={wolfLogo}
               className="logo rishabh-brand-logo centerpiece-logo clickable-logo"
-              alt="Rishabh Tech logo"
+              alt="Rishabh Tech Wolf logo"
               onClick={() => openLogoModal(wolfLogo, 'Rishabh Tech Brand')}
             />
           </TooltipWrapper>
 
-          <TooltipWrapper title="Click to enlarge React Logo">
+          <TooltipWrapper title="React 18 Component Architecture">
             <img
               src={reactLogo}
               className="logo react clickable-logo"
               alt="React logo"
-              onClick={() => openLogoModal(reactLogo, 'React Framework')}
+              onClick={() => openLogoModal(reactLogo, 'React 18 Framework')}
             />
           </TooltipWrapper>
         </div>
@@ -141,331 +150,409 @@ const Home: React.FC = () => {
           </div>
         )}
 
-        <h1>Welcome to Rishabh Tech</h1>
-        <p>Manage your web ecosystem efficiently with modern tools & analytics.</p>
-        
-        {/* GIF Carousel Section */}
+        <div className="hero-text-wrap">
+          <span className="hero-badge">
+            <i className="fas fa-sparkles"></i> Antigravity 2.0 Web Platform
+          </span>
+          <h1>Welcome to Rishabh Tech</h1>
+          <p>
+            An ultra-responsive ecosystem featuring high-performance databases, financial tools, 
+            analytics dashboards, and interactive gaming experiences.
+          </p>
+        </div>
+
+        {/* Modern GIF Showcase Carousel */}
         <div className="gif-carousel-section">
-          <div className="gif-carousel">
-            <button className="carousel-button prev" onClick={goToPrevious}>
-              &lt;
-            </button>
-            
-            <div className="carousel-slide">
-              <img 
-                src={gifs[currentIndex].src} 
-                alt={gifs[currentIndex].title} 
-                className="gif-item"
-              />
-              <div className="carousel-caption">{gifs[currentIndex].title}</div>
+          <div className="carousel-card-wrapper">
+            <div className="carousel-header">
+              <div className="carousel-status">
+                <span className={`status-dot ${isPlaying ? 'playing' : 'paused'}`}></span>
+                <span>{isPlaying ? 'Live Showcase' : 'Showcase Paused'}</span>
+              </div>
+              <div className="carousel-controls-top">
+                <button
+                  type="button"
+                  className="carousel-icon-btn"
+                  onClick={toggleCarouselPlay}
+                  title={isPlaying ? 'Pause Auto-Play' : 'Resume Auto-Play'}
+                >
+                  <i className={`fas fa-${isPlaying ? 'pause' : 'play'}`}></i>
+                </button>
+              </div>
             </div>
-            
-            <button className="carousel-button next" onClick={goToNext}>
-              &gt;
-            </button>
-          </div>
-          
-          <div className="carousel-indicators">
-            {gifs.map((gif, index) => (
-              <button
-                key={gif.id}
-                className={`indicator ${index === currentIndex ? 'active' : ''}`}
-                onClick={() => goToGif(index)}
-              />
-            ))}
+
+            <div className="gif-display-stage">
+              <button 
+                type="button" 
+                className="stage-nav-btn prev-btn" 
+                onClick={goToPrevious}
+                aria-label="Previous GIF"
+              >
+                <i className="fas fa-chevron-left"></i>
+              </button>
+
+              <div className="gif-slide-content">
+                <img
+                  key={gifs[currentIndex].id}
+                  src={gifs[currentIndex].src}
+                  alt={gifs[currentIndex].title}
+                  className="gif-image"
+                />
+                <div className="gif-caption-badge">
+                  <span className="gif-counter">{currentIndex + 1} / {gifs.length}</span>
+                  <span className="gif-title">{gifs[currentIndex].title}</span>
+                </div>
+              </div>
+
+              <button 
+                type="button" 
+                className="stage-nav-btn next-btn" 
+                onClick={goToNext}
+                aria-label="Next GIF"
+              >
+                <i className="fas fa-chevron-right"></i>
+              </button>
+            </div>
+
+            <div className="carousel-indicators">
+              {gifs.map((gif, index) => (
+                <button
+                  key={gif.id}
+                  type="button"
+                  className={`indicator-dot ${index === currentIndex ? 'active' : ''}`}
+                  onClick={() => goToGif(index)}
+                  aria-label={`Jump to GIF ${index + 1}`}
+                />
+              ))}
+            </div>
           </div>
         </div>
-      
-        <div className="action-buttons">
-          <Link to="/info" className="info-page-button" onClick={() => showToast('Opening Info page', 'info')}>
-            <i className="fas fa-chart-line"></i> Checkout Info to know more
+
+        {/* Quick CTA Actions */}
+        <div className="hero-cta-actions">
+          <Link to="/info" className="cta-btn primary" onClick={() => showToast('Opening Analytics & Task Hub', 'info')}>
+            <i className="fas fa-chart-pie"></i>
+            <span>Analytics &amp; Tasks Hub</span>
           </Link>
-          <a href="#profile" className="profile-page-button">
-            <i className="fas fa-user"></i> View My Profile below
+          <a href="#profile" className="cta-btn secondary">
+            <i className="fas fa-user-astronaut"></i>
+            <span>Developer Profile</span>
           </a>
+          <button type="button" onClick={handleDownloadApk} className="cta-btn apk">
+            <i className="fab fa-android"></i>
+            <span>Download Android APK</span>
+          </button>
         </div>
+      </section>
 
-        {/* All Sidebar Menu Shortcuts Section */}
-        <div className="shortcuts-section">
+      {/* Quick Navigation Shortcuts Section */}
+      <section className="shortcuts-section">
+        <div className="shortcuts-header">
           <h2 className="shortcuts-title">
-            <i className="fas fa-th-large"></i> Quick Sidebar Navigation
+            <i className="fas fa-compass"></i> System Navigation Hub
           </h2>
-          <p className="shortcuts-subtitle">Instant shortcuts to all pages, tools, mini games, & school directories</p>
-          
-          <div className="shortcuts-categories">
-            <div className="shortcut-group">
-              <h3><i className="fas fa-table"></i> Table Info Directory</h3>
-              <div className="shortcut-grid">
-                <Link to="/students" className="shortcut-card" onClick={() => showToast('Opening Students Directory', 'info')}>
-                  <div className="shortcut-icon students-icon"><i className="fas fa-user-graduate"></i></div>
-                  <div className="shortcut-text">
-                    <span className="shortcut-label">Students</span>
-                    <span className="shortcut-desc">Grade & Scholar Info</span>
-                  </div>
-                </Link>
-                <Link to="/teachers" className="shortcut-card" onClick={() => showToast('Opening Teachers Directory', 'info')}>
-                  <div className="shortcut-icon teachers-icon"><i className="fas fa-chalkboard-teacher"></i></div>
-                  <div className="shortcut-text">
-                    <span className="shortcut-label">Teachers</span>
-                    <span className="shortcut-desc">Faculty & Subjects</span>
-                  </div>
-                </Link>
-                <Link to="/attendance" className="shortcut-card" onClick={() => showToast('Opening Attendance Tracker', 'info')}>
-                  <div className="shortcut-icon attendance-icon"><i className="fas fa-calendar-check"></i></div>
-                  <div className="shortcut-text">
-                    <span className="shortcut-label">Attendance</span>
-                    <span className="shortcut-desc">Daily Presence Status</span>
-                  </div>
-                </Link>
-                <Link to="/ipolist" className="shortcut-card" onClick={() => showToast('Opening IPO Watchlist', 'info')}>
-                  <div className="shortcut-icon ipo-icon"><i className="fas fa-coins"></i></div>
-                  <div className="shortcut-text">
-                    <span className="shortcut-label">IPO List</span>
-                    <span className="shortcut-desc">Market Listings & Sizes</span>
-                  </div>
-                </Link>
-              </div>
-            </div>
+          <p className="shortcuts-subtitle">
+            Instant 1-click access to directories, financial tools, cloud database, and retro mini games
+          </p>
+        </div>
 
-            <div className="shortcut-group">
-              <h3><i className="fas fa-tools"></i> Tools</h3>
-              <div className="shortcut-grid">
-                <Link to="/calculator" className="shortcut-card" onClick={() => showToast('Opening Smart Calculator', 'info')}>
-                  <div className="shortcut-icon calc-icon"><i className="fas fa-calculator"></i></div>
-                  <div className="shortcut-text">
-                    <span className="shortcut-label">Calculator</span>
-                    <span className="shortcut-desc">Financial Math Engine</span>
-                  </div>
-                </Link>
-                <Link to="/counter" className="shortcut-card" onClick={() => showToast('Opening Digital Counter', 'info')}>
-                  <div className="shortcut-icon counter-icon"><i className="fas fa-plus-circle"></i></div>
-                  <div className="shortcut-text">
-                    <span className="shortcut-label">Digital Counter</span>
-                    <span className="shortcut-desc">Step Tally & Reset</span>
-                  </div>
-                </Link>
-                <Link to="/stopwatch" className="shortcut-card" onClick={() => showToast('Opening Precision Stopwatch', 'info')}>
-                  <div className="shortcut-icon watch-icon"><i className="fas fa-stopwatch"></i></div>
-                  <div className="shortcut-text">
-                    <span className="shortcut-label">Stopwatch</span>
-                    <span className="shortcut-desc">Lap Timer & Splits</span>
-                  </div>
-                </Link>
-              </div>
-            </div>
-
-            <div className="shortcut-group">
-              <h3><i className="fas fa-gamepad"></i> Mini Games Suite</h3>
-              <div className="shortcut-grid">
-                <Link to="/tictactoe" className="shortcut-card" onClick={() => showToast('Launching Tic Tac Toe', 'info')}>
-                  <div className="shortcut-icon game-icon"><i className="fas fa-gamepad"></i></div>
-                  <div className="shortcut-text">
-                    <span className="shortcut-label">Tic Tac Toe</span>
-                    <span className="shortcut-desc">Smart AI &amp; 2-Player Match</span>
-                  </div>
-                </Link>
-                <Link to="/3dcube" className="shortcut-card" onClick={() => showToast('Launching 3D Cube', 'info')}>
-                  <div className="shortcut-icon cube-icon"><i className="fas fa-cube"></i></div>
-                  <div className="shortcut-text">
-                    <span className="shortcut-label">3D Cube</span>
-                    <span className="shortcut-desc">WebGL Interactive Mesh</span>
-                  </div>
-                </Link>
-                <Link to="/rubiks-cube" className="shortcut-card" onClick={() => showToast('Launching Rubiks Cube', 'info')}>
-                  <div className="shortcut-icon rubik-icon"><i className="fas fa-border-all"></i></div>
-                  <div className="shortcut-text">
-                    <span className="shortcut-label">Rubik's Cube</span>
-                    <span className="shortcut-desc">3x3 Magic Face Rotations</span>
-                  </div>
-                </Link>
-                <Link to="/snake" className="shortcut-card" onClick={() => showToast('Launching Snake Game', 'info')}>
-                  <div className="shortcut-icon snake-icon"><i className="fas fa-dragon"></i></div>
-                  <div className="shortcut-text">
-                    <span className="shortcut-label">Snake Game</span>
-                    <span className="shortcut-desc">Golden Food & Wrap Mode</span>
-                  </div>
-                </Link>
-                <Link to="/memory-match" className="shortcut-card" onClick={() => showToast('Launching Memory Match', 'info')}>
-                  <div className="shortcut-icon memory-icon"><i className="fas fa-brain"></i></div>
-                  <div className="shortcut-text">
-                    <span className="shortcut-label">Memory Match</span>
-                    <span className="shortcut-desc">Pairs & Star Rating</span>
-                  </div>
-                </Link>
-                <Link to="/color-rush" className="shortcut-card" onClick={() => showToast('Launching Color Rush', 'info')}>
-                  <div className="shortcut-icon color-icon"><i className="fas fa-palette"></i></div>
-                  <div className="shortcut-text">
-                    <span className="shortcut-label">Color Rush</span>
-                    <span className="shortcut-desc">Streak Combo Blitz</span>
-                  </div>
-                </Link>
-              </div>
+        <div className="shortcuts-categories">
+          {/* Table Info Group */}
+          <div className="shortcut-group">
+            <h3><i className="fas fa-table-cells"></i> Table Info Directory</h3>
+            <div className="shortcut-grid">
+              <Link to="/students" className="shortcut-card" onClick={() => showToast('Opening Students Directory', 'info')}>
+                <div className="shortcut-icon students-icon"><i className="fas fa-user-graduate"></i></div>
+                <div className="shortcut-text">
+                  <span className="shortcut-label">Students</span>
+                  <span className="shortcut-desc">Class, Grade &amp; Scholar Info</span>
+                </div>
+              </Link>
+              <Link to="/teachers" className="shortcut-card" onClick={() => showToast('Opening Teachers Directory', 'info')}>
+                <div className="shortcut-icon teachers-icon"><i className="fas fa-chalkboard-user"></i></div>
+                <div className="shortcut-text">
+                  <span className="shortcut-label">Teachers</span>
+                  <span className="shortcut-desc">Faculty &amp; Departments</span>
+                </div>
+              </Link>
+              <Link to="/attendance" className="shortcut-card" onClick={() => showToast('Opening Attendance Tracker', 'info')}>
+                <div className="shortcut-icon attendance-icon"><i className="fas fa-calendar-check"></i></div>
+                <div className="shortcut-text">
+                  <span className="shortcut-label">Attendance</span>
+                  <span className="shortcut-desc">Daily Logs &amp; Status</span>
+                </div>
+              </Link>
+              <Link to="/ipolist" className="shortcut-card" onClick={() => showToast('Opening IPO Watchlist', 'info')}>
+                <div className="shortcut-icon ipo-icon"><i className="fas fa-coins"></i></div>
+                <div className="shortcut-text">
+                  <span className="shortcut-label">IPO List</span>
+                  <span className="shortcut-desc">Market Listings &amp; Lot Sizes</span>
+                </div>
+              </Link>
             </div>
           </div>
-                    <div className="shortcut-group">
-              <h3><i className="fas fa-database"></i> Database & Admin</h3>
-              <div className="shortcut-grid">
-                <Link to="/database" className="shortcut-card" onClick={() => showToast('Opening Database Hub', 'info')}>
-                  <div className="shortcut-icon db-icon"><i className="fas fa-database"></i></div>
-                  <div className="shortcut-text">
-                    <span className="shortcut-label">Database Hub</span>
-                    <span className="shortcut-desc">Local Dexie & Supabase Cloud Sync</span>
-                  </div>
-                </Link>
-              </div>
+
+          {/* Tools Group */}
+          <div className="shortcut-group">
+            <h3><i className="fas fa-screwdriver-wrench"></i> Productivity Tools</h3>
+            <div className="shortcut-grid">
+              <Link to="/calculator" className="shortcut-card" onClick={() => showToast('Opening Smart Calculator', 'info')}>
+                <div className="shortcut-icon calc-icon"><i className="fas fa-calculator"></i></div>
+                <div className="shortcut-text">
+                  <span className="shortcut-label">Calculator</span>
+                  <span className="shortcut-desc">Financial Math Engine</span>
+                </div>
+              </Link>
+              <Link to="/counter" className="shortcut-card" onClick={() => showToast('Opening Digital Counter', 'info')}>
+                <div className="shortcut-icon counter-icon"><i className="fas fa-arrow-up-1-9"></i></div>
+                <div className="shortcut-text">
+                  <span className="shortcut-label">Digital Counter</span>
+                  <span className="shortcut-desc">Tally, Step Size &amp; Reset</span>
+                </div>
+              </Link>
+              <Link to="/stopwatch" className="shortcut-card" onClick={() => showToast('Opening Precision Stopwatch', 'info')}>
+                <div className="shortcut-icon watch-icon"><i className="fas fa-stopwatch"></i></div>
+                <div className="shortcut-text">
+                  <span className="shortcut-label">Stopwatch</span>
+                  <span className="shortcut-desc">Millisecond Splits &amp; Laps</span>
+                </div>
+              </Link>
+            </div>
+          </div>
+
+          {/* Mini Games Suite */}
+          <div className="shortcut-group">
+            <h3><i className="fas fa-gamepad"></i> Mini Games Suite</h3>
+            <div className="shortcut-grid">
+              <Link to="/tictactoe" className="shortcut-card" onClick={() => showToast('Launching Tic Tac Toe', 'info')}>
+                <div className="shortcut-icon game-icon"><i className="fas fa-hashtag"></i></div>
+                <div className="shortcut-text">
+                  <span className="shortcut-label">Tic Tac Toe</span>
+                  <span className="shortcut-desc">AI Engine &amp; 2-Player Match</span>
+                </div>
+              </Link>
+              <Link to="/snake" className="shortcut-card" onClick={() => showToast('Launching Snake Game', 'info')}>
+                <div className="shortcut-icon snake-icon"><i className="fas fa-worm"></i></div>
+                <div className="shortcut-text">
+                  <span className="shortcut-label">Snake Game</span>
+                  <span className="shortcut-desc">Neon Food &amp; Wrap Mode</span>
+                </div>
+              </Link>
+              <Link to="/memory-match" className="shortcut-card" onClick={() => showToast('Launching Memory Match', 'info')}>
+                <div className="shortcut-icon memory-icon"><i className="fas fa-brain"></i></div>
+                <div className="shortcut-text">
+                  <span className="shortcut-label">Memory Match</span>
+                  <span className="shortcut-desc">Card Pairs &amp; High Scores</span>
+                </div>
+              </Link>
+              <Link to="/color-rush" className="shortcut-card" onClick={() => showToast('Launching Color Rush', 'info')}>
+                <div className="shortcut-icon color-icon"><i className="fas fa-palette"></i></div>
+                <div className="shortcut-text">
+                  <span className="shortcut-label">Color Rush</span>
+                  <span className="shortcut-desc">Pattern Streak Memory</span>
+                </div>
+              </Link>
+              <Link to="/3dcube" className="shortcut-card" onClick={() => showToast('Launching 3D Cube', 'info')}>
+                <div className="shortcut-icon cube-icon"><i className="fas fa-cube"></i></div>
+                <div className="shortcut-text">
+                  <span className="shortcut-label">3D Cube</span>
+                  <span className="shortcut-desc">Three.js Orbit Controls</span>
+                </div>
+              </Link>
+              <Link to="/rubiks-cube" className="shortcut-card" onClick={() => showToast('Launching Rubiks Cube', 'info')}>
+                <div className="shortcut-icon rubik-icon"><i className="fas fa-cubes"></i></div>
+                <div className="shortcut-text">
+                  <span className="shortcut-label">Rubik's Cube</span>
+                  <span className="shortcut-desc">3x3 Face Rotations &amp; Solvers</span>
+                </div>
+              </Link>
+            </div>
+          </div>
+
+          {/* Database Group */}
+          <div className="shortcut-group">
+            <h3><i className="fas fa-server"></i> Cloud &amp; Local Storage</h3>
+            <div className="shortcut-grid">
+              <Link to="/database" className="shortcut-card" onClick={() => showToast('Opening Database Hub', 'info')}>
+                <div className="shortcut-icon db-icon"><i className="fas fa-database"></i></div>
+                <div className="shortcut-text">
+                  <span className="shortcut-label">Database Hub</span>
+                  <span className="shortcut-desc">Dexie IndexedDB &amp; Supabase Cloud</span>
+                </div>
+              </Link>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Enhanced Profile Section */}
-      <div className="profile-section" id="profile">
-        <h2>My Profile</h2>
-        <div className="profile-card">
-          <div className="profile-header">
-            <div className="avatar-container">
-              <img src={profileImage} alt="Profile" className="profile-image" />
-              <div className="profile-info">
-                <h3>Rishabh Kumar Gupta</h3>
-                <p className="title">Software Developer - Frontend</p>
-                <p className="bio">Creating beautiful and functional user interfaces with React and TypeScript.</p>
-              </div>
+      {/* Completely Revamped Developer Profile Section */}
+      <section className="profile-section" id="profile">
+        <div className="profile-header-title">
+          <h2>
+            <i className="fas fa-id-card-clip"></i> Developer Profile
+          </h2>
+          <p>Full-Stack Engineering &amp; Modern Web Architecture</p>
+        </div>
+
+        <div className="developer-profile-card">
+          {/* Main Top Profile Summary */}
+          <div className="profile-hero">
+            <div className="profile-avatar-wrapper">
+              <img src={profileImage} alt="Rishabh Kumar Gupta" className="profile-avatar" />
+              <span className="online-beacon" title="Online & Available"></span>
             </div>
-          </div>
-          
-          {/* Desktop Social Links */}
-          <div className="social-links desktop-only">
-            <a href="https://github.com/rajrishabhkr" target="_blank" rel="noopener noreferrer" onClick={() => showToast('Opening GitHub profile', 'info')}>
-              <i className="fab fa-github"></i> GitHub
-            </a>
-            <a href="https://linkedin.com/in/rajrishabhkr" target="_blank" rel="noopener noreferrer" onClick={() => showToast('Opening LinkedIn profile', 'info')}>
-              <i className="fab fa-linkedin"></i> LinkedIn
-            </a>
-            <a href="https://twitter.com/" target="_blank" rel="noopener noreferrer" onClick={() => showToast('Opening Twitter profile', 'info')}>
-              <i className="fab fa-twitter"></i> Twitter
-            </a>
-            <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" onClick={() => showToast('Opening Instagram profile', 'info')}>
-              <i className="fab fa-instagram"></i> Instagram
-            </a>
-          </div>
 
-          {/* Mobile Social Links Custom Dropdown */}
-          <div className="social-dropdown-wrapper mobile-only">
-            <button
-              className="social-dropdown-btn"
-              onClick={() => setSocialDropdownOpen(!socialDropdownOpen)}
-            >
-              <i className="fas fa-share-alt"></i> Connect via Social Media
-              <i className={`fas fa-chevron-${socialDropdownOpen ? 'up' : 'down'}`}></i>
-            </button>
+            <div className="profile-headline">
+              <div className="name-row">
+                <h3>Rishabh Kumar Gupta</h3>
+                <span className="verified-badge" title="Verified Creator">
+                  <i className="fas fa-check-circle"></i>
+                </span>
+              </div>
+              <p className="role-tagline">
+                <i className="fas fa-code"></i> Software Developer &bull; Frontend &amp; Full-Stack Architect
+              </p>
+              <p className="bio-summary">
+                Passionate creator building performant web applications with React, TypeScript, 
+                Vite, Supabase, and modern responsive design systems.
+              </p>
 
-            {socialDropdownOpen && (
-              <div className="social-dropdown-menu">
+              {/* Social and Action Pills */}
+              <div className="social-pills-row">
                 <a
                   href="https://github.com/rajrishabhkr"
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => {
-                    showToast('Opening GitHub profile', 'info');
-                    setSocialDropdownOpen(false);
-                  }}
+                  className="social-pill github"
+                  onClick={() => showToast('Opening GitHub profile', 'info')}
                 >
-                  <i className="fab fa-github"></i> GitHub
+                  <i className="fab fa-github"></i>
+                  <span>GitHub</span>
                 </a>
                 <a
                   href="https://linkedin.com/in/rajrishabhkr"
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => {
-                    showToast('Opening LinkedIn profile', 'info');
-                    setSocialDropdownOpen(false);
-                  }}
+                  className="social-pill linkedin"
+                  onClick={() => showToast('Opening LinkedIn profile', 'info')}
                 >
-                  <i className="fab fa-linkedin"></i> LinkedIn
+                  <i className="fab fa-linkedin"></i>
+                  <span>LinkedIn</span>
                 </a>
                 <a
                   href="https://twitter.com/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => {
-                    showToast('Opening Twitter profile', 'info');
-                    setSocialDropdownOpen(false);
-                  }}
+                  className="social-pill twitter"
+                  onClick={() => showToast('Opening Twitter profile', 'info')}
                 >
-                  <i className="fab fa-twitter"></i> Twitter
+                  <i className="fab fa-twitter"></i>
+                  <span>Twitter</span>
                 </a>
                 <a
                   href="https://instagram.com/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => {
-                    showToast('Opening Instagram profile', 'info');
-                    setSocialDropdownOpen(false);
-                  }}
+                  className="social-pill instagram"
+                  onClick={() => showToast('Opening Instagram profile', 'info')}
                 >
-                  <i className="fab fa-instagram"></i> Instagram
+                  <i className="fab fa-instagram"></i>
+                  <span>Instagram</span>
                 </a>
                 <button
                   type="button"
+                  className="social-pill apk-pill"
                   onClick={handleDownloadApk}
-                  className="apk-link-item"
-                  style={{
-                    color: '#2ed573',
-                    fontWeight: 'bold',
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    width: '100%',
-                    textAlign: 'left',
-                    fontFamily: 'inherit',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px',
-                    padding: '8px 12px',
-                  }}
+                  title="Download Android APK"
                 >
-                  <span style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
-                    <i className="fab fa-android" style={{ fontSize: '1.25rem', color: '#2ed573' }}></i>
-                    <i
-                      className="fas fa-arrow-down"
-                      style={{
-                        position: 'absolute',
-                        bottom: '-2px',
-                        right: '-5px',
-                        fontSize: '0.6rem',
-                        color: '#ffffff',
-                        backgroundColor: '#2ed573',
-                        borderRadius: '50%',
-                        padding: '2px',
-                        lineHeight: 1,
-                      }}
-                    ></i>
-                  </span>
-                  <span>Download Website APK (Android)</span>
+                  <i className="fab fa-android"></i>
+                  <span>Get Android APK</span>
                 </button>
               </div>
-            )}
+            </div>
           </div>
-          
-          <div className="profile-details">
-            <div className="detail-item">
-              <span className="label">Email:</span>
-              <span className="value">rajrishabhkr@gmail.com</span>
+
+          {/* Quick Metrics Strip */}
+          <div className="profile-metrics-strip">
+            <div className="metric-cell">
+              <span className="metric-number">3+</span>
+              <span className="metric-label">Years Experience</span>
             </div>
-            <div className="detail-item">
-              <span className="label">Location:</span>
-              <span className="value">Patna, India</span>
+            <div className="metric-cell">
+              <span className="metric-number">20+</span>
+              <span className="metric-label">Projects &amp; Repos</span>
             </div>
-            <div className="detail-item">
-              <span className="label">Skills:</span>
-              <span className="value">React, Vue, JavaScript, TypeScript, Java, Node.js</span>
+            <div className="metric-cell">
+              <span className="metric-number">100%</span>
+              <span className="metric-label">TypeScript &amp; React</span>
             </div>
-            <div className="detail-item">
-              <span className="label">Experience:</span>
-              <span className="value">3+ years in web development.</span>
+            <div className="metric-cell">
+              <span className="metric-number">60 FPS</span>
+              <span className="metric-label">WebGL Graphics</span>
+            </div>
+          </div>
+
+          {/* Tech Stack Badges */}
+          <div className="profile-stack-section">
+            <h4><i className="fas fa-layer-group"></i> Core Technology Stack</h4>
+            <div className="stack-chips-wrap">
+              <span className="stack-chip"><i className="fab fa-react"></i> React 18</span>
+              <span className="stack-chip"><i className="fab fa-js-square"></i> TypeScript</span>
+              <span className="stack-chip"><i className="fas fa-wind"></i> Tailwind CSS</span>
+              <span className="stack-chip"><i className="fab fa-sass"></i> SCSS / SASS</span>
+              <span className="stack-chip"><i className="fas fa-bolt"></i> Vite</span>
+              <span className="stack-chip"><i className="fas fa-cloud"></i> Supabase</span>
+              <span className="stack-chip"><i className="fas fa-database"></i> Dexie IndexedDB</span>
+              <span className="stack-chip"><i className="fas fa-cube"></i> Three.js / WebGL</span>
+              <span className="stack-chip"><i className="fab fa-node-js"></i> Node.js</span>
+              <span className="stack-chip"><i className="fab fa-git-alt"></i> Git &amp; GitHub</span>
+            </div>
+          </div>
+
+          {/* Detailed Info Grid */}
+          <div className="profile-details-grid">
+            <div className="detail-card">
+              <div className="detail-icon email-icon"><i className="fas fa-envelope"></i></div>
+              <div className="detail-content">
+                <span className="detail-title">Direct Email</span>
+                <span className="detail-value">rajrishabhkr@gmail.com</span>
+              </div>
+              <button
+                type="button"
+                className="copy-detail-btn"
+                onClick={handleCopyEmail}
+                title="Copy Email Address"
+              >
+                <i className="fas fa-copy"></i>
+              </button>
+            </div>
+
+            <div className="detail-card">
+              <div className="detail-icon loc-icon"><i className="fas fa-location-dot"></i></div>
+              <div className="detail-content">
+                <span className="detail-title">Location</span>
+                <span className="detail-value">Patna, Bihar, India</span>
+              </div>
+            </div>
+
+            <div className="detail-card">
+              <div className="detail-icon status-icon"><i className="fas fa-briefcase"></i></div>
+              <div className="detail-content">
+                <span className="detail-title">Availability</span>
+                <span className="detail-value text-emerald-400">Open for Opportunities</span>
+              </div>
+            </div>
+
+            <div className="detail-card">
+              <div className="detail-icon edu-icon"><i className="fas fa-graduation-cap"></i></div>
+              <div className="detail-content">
+                <span className="detail-title">Focus &amp; Discipline</span>
+                <span className="detail-value">Software Architecture &amp; UI/UX</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };
