@@ -4,7 +4,9 @@ import { Facebook, X, LinkedIn, GitHub, Instagram, Menu, Share, GetApp, Android 
 import { Link } from "react-router-dom";
 import { useToast } from "./ToastContext";
 import "./Components.scss";
-import dashboardLogo from '../../../public/images/logo/wolf.png';
+import { getAssetUrl } from "../../utils/assetUrl";
+
+const dashboardLogo = getAssetUrl("images/logo/wolf.png");
 
 interface HeaderProps {
   sidebarOpen: boolean;

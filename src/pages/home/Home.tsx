@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import reactLogo from '../../assets/react.svg';
-import wolfLogo from '../../../public/images/logo/wolf.png';
-import viteLogo from '/vite.svg';
 import { Link } from 'react-router-dom';
 import './Home.scss';
-import profileImage from '../../../public/images/profile_pic.jpg';
-import gif1 from '../../../public/images/gif/chicken.gif';
-import gif2 from '../../../public/images/gif/panda.gif';
-import gif3 from '../../../public/images/gif/poo.gif';
-import gif4 from '../../../public/images/gif/unicorn.gif';
 import { useToast } from '../../components/layout/ToastContext';
+import { getAssetUrl } from '../../utils/assetUrl';
+
+const wolfLogo = getAssetUrl('images/logo/wolf.png');
+const viteLogo = getAssetUrl('vite.svg');
+const profileImage = getAssetUrl('images/profile_pic.jpg');
+const gif1 = getAssetUrl('images/gif/chicken.gif');
+const gif2 = getAssetUrl('images/gif/panda.gif');
+const gif3 = getAssetUrl('images/gif/poo.gif');
+const gif4 = getAssetUrl('images/gif/unicorn.gif');
 
 const TooltipWrapper: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
   <div className="tooltip-container" title={title}>

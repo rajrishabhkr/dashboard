@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import './Stocks.scss';
 import { useToast } from '../../components/layout/ToastContext';
-import goairLogo from '../../../public/images/logo/goair.png';
-import oyoLogo from '../../../public/images/logo/oyo.png';
-import zomatoLogo from '../../../public/images/logo/zomato.png';
-import bajajLogo from '../../../public/images/logo/bajaj.png';
-import swiggyLogo from '../../../public/images/logo/swiggy.png';
-import tataLogo from '../../../public/images/logo/tata.png';
-import mahindraLogo from '../../../public/images/logo/mahindra.png';
+import { getAssetUrl } from '../../utils/assetUrl';
+
+const goairLogo = getAssetUrl('images/logo/goair.png');
+const oyoLogo = getAssetUrl('images/logo/oyo.png');
+const zomatoLogo = getAssetUrl('images/logo/zomato.png');
+const bajajLogo = getAssetUrl('images/logo/bajaj.png');
+const swiggyLogo = getAssetUrl('images/logo/swiggy.png');
+const tataLogo = getAssetUrl('images/logo/tata.png');
+const mahindraLogo = getAssetUrl('images/logo/mahindra.png');
 
 interface IPODetailItem {
   company: string;
